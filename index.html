@@ -1,552 +1,332 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DentalBuddy 3D</title>
 
 <style>
-
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
+  box-sizing:border-box;
 }
 
 body{
-font-family:Arial,sans-serif;
-background:#06111f;
-color:white;
-min-height:100vh;
+  margin:0;
+  background:#06111f;
+  color:white;
+  font-family:Arial,sans-serif;
+  text-align:center;
 }
 
 header{
-padding:18px;
-text-align:center;
-background:linear-gradient(135deg,#102a43,#087f8c);
-}
-
-.logo{
-font-size:25px;
-font-weight:bold;
-}
-
-.subtitle{
-font-size:12px;
-opacity:.8;
-margin-top:5px;
-}
-
-.container{
-max-width:650px;
-margin:auto;
-padding:18px;
+  padding:20px;
+  background:linear-gradient(135deg,#102a43,#087f8c);
 }
 
 h1{
-font-size:26px;
-margin-bottom:8px;
+  margin:0;
+  font-size:26px;
 }
 
-.intro{
-color:#aab9c8;
-font-size:14px;
-line-height:1.5;
-margin-bottom:20px;
+p{
+  color:#b7c7d5;
 }
 
-/* 3D AREA */
-
-.viewer{
-height:330px;
-background:
-radial-gradient(circle at center,#183b50,#071522 70%);
-border-radius:25px;
-display:flex;
-align-items:center;
-justify-content:center;
-perspective:900px;
-overflow:hidden;
-position:relative;
+#viewer{
+  width:100%;
+  height:70vh;
+  min-height:450px;
+  touch-action:none;
 }
-
-.tooth{
-width:145px;
-height:185px;
-position:relative;
-
-background:linear-gradient(
-135deg,
-#ffffff,
-#d8e3e7
-);
-
-border-radius:
-48% 48% 35% 35% /
-35% 35% 58% 58%;
-
-box-shadow:
-inset -18px -18px 30px rgba(0,0,0,.15),
-0 25px 50px rgba(0,0,0,.45);
-
-transform-style:preserve-3d;
-
-animation:float 4s ease-in-out infinite;
-cursor:pointer;
-
-transition:.4s;
-}
-
-.tooth:hover{
-transform:rotateY(20deg) scale(1.05);
-}
-
-@keyframes float{
-
-0%,100%{
-transform:translateY(0) rotateY(-15deg);
-}
-
-50%{
-transform:translateY(-10px) rotateY(15deg);
-}
-
-}
-
-/* roots */
-
-.root{
-position:absolute;
-bottom:-65px;
-background:#dce7ea;
-width:35px;
-height:85px;
-border-radius:50%;
-}
-
-.root.left{
-left:20px;
-transform:rotate(8deg);
-}
-
-.root.center{
-left:55px;
-height:95px;
-}
-
-.root.right{
-right:20px;
-transform:rotate(-8deg);
-}
-
-/* tooth shine */
-
-.shine{
-position:absolute;
-width:35px;
-height:70px;
-background:rgba(255,255,255,.55);
-border-radius:50%;
-left:22px;
-top:35px;
-transform:rotate(20deg);
-}
-
-/* controls */
-
-.controls{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-top:15px;
-}
-
-.control{
-padding:13px;
-border-radius:14px;
-background:#10263b;
-border:1px solid #1c4058;
-color:white;
-font-size:14px;
-cursor:pointer;
-}
-
-.control:active{
-transform:scale(.97);
-}
-
-/* info */
 
 .info{
-margin-top:18px;
-background:#0d2033;
-border-radius:20px;
-padding:20px;
-border:1px solid #183b50;
+  padding:15px 20px 30px;
 }
 
-.info h2{
-font-size:20px;
-margin-bottom:8px;
+button{
+  padding:13px 20px;
+  border:0;
+  border-radius:12px;
+  background:#19b8ca;
+  color:white;
+  font-weight:bold;
+  margin:5px;
 }
-
-.info p{
-color:#b8c6d3;
-font-size:14px;
-line-height:1.6;
-}
-
-.exam{
-margin-top:14px;
-padding:12px;
-border-radius:12px;
-background:#102d3d;
-font-size:13px;
-line-height:1.5;
-}
-
-.exam strong{
-color:#4dd7df;
-}
-
-/* anatomy cards */
-
-.section{
-margin-top:25px;
-}
-
-.section h2{
-margin-bottom:12px;
-}
-
-.anatomy{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-.anatomy-card{
-background:#10263b;
-padding:15px;
-border-radius:15px;
-cursor:pointer;
-border:1px solid transparent;
-}
-
-.anatomy-card:hover{
-border-color:#39c8d5;
-}
-
-.anatomy-card span{
-font-size:25px;
-display:block;
-margin-bottom:7px;
-}
-
-.anatomy-card h3{
-font-size:14px;
-}
-
-.anatomy-card p{
-font-size:11px;
-color:#8fa3b5;
-margin-top:5px;
-}
-
-footer{
-text-align:center;
-padding:30px;
-font-size:11px;
-color:#667b8f;
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-
-<div class="logo">
-🦷 DentalBuddy 3D
-</div>
-
-<div class="subtitle">
-Learn • Visualize • Practice • Master Dentistry
-</div>
-
+<h1>🦷 DentalBuddy 3D</h1>
+<p>Interactive Tooth Explorer</p>
 </header>
 
+<div id="viewer"></div>
 
-<div class="container">
-
-<h1>
-3D Tooth Explorer
-</h1>
-
-<p class="intro">
-Tap different parts of the tooth to understand
-anatomy in a simple, exam-friendly way.
-</p>
-
-
-<div class="viewer">
-
-<div class="tooth" onclick="showTooth()">
-
-<div class="shine"></div>
-
-<div class="root left"></div>
-<div class="root center"></div>
-<div class="root right"></div>
-
-</div>
-
-</div>
-
-
-<div class="controls">
-
-<button class="control"
-onclick="rotateTooth()">
-🔄 Rotate
-</button>
-
-<button class="control"
-onclick="showTooth()">
-🦷 Explore
-</button>
-
-</div>
-
-
-<div class="info" id="info">
-
-<h2>🦷 Tooth Anatomy</h2>
+<div class="info">
+<h2>3D Tooth Explorer</h2>
 
 <p>
-Select an anatomical structure below
-to learn about it.
+👆 Drag to rotate<br>
+🤏 Pinch to zoom
 </p>
 
-<div class="exam">
-
-<strong>🎯 Exam Point:</strong>
-
-The tooth consists of enamel,
-dentin, pulp and cementum.
-
+<button onclick="resetView()">Reset View</button>
 </div>
 
-</div>
+<script type="module">
+
+import * as THREE from
+'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+
+import {OrbitControls} from
+'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
+
+const container =
+document.getElementById("viewer");
+
+const scene = new THREE.Scene();
+
+scene.background =
+new THREE.Color(0x06111f);
+
+const camera =
+new THREE.PerspectiveCamera(
+45,
+container.clientWidth /
+container.clientHeight,
+0.1,
+100
+);
+
+camera.position.set(0,1.5,5);
+
+const renderer =
+new THREE.WebGLRenderer({
+antialias:true
+});
+
+renderer.setPixelRatio(
+Math.min(window.devicePixelRatio,2)
+);
+
+renderer.setSize(
+container.clientWidth,
+container.clientHeight
+);
+
+container.appendChild(renderer.domElement);
 
 
-<div class="section">
+/* LIGHTING */
 
-<h2>
-Explore Anatomy
-</h2>
+const ambient =
+new THREE.AmbientLight(
+0xffffff,
+2
+);
 
-<div class="anatomy">
+scene.add(ambient);
 
-<div class="anatomy-card"
-onclick="showPart('Enamel')">
+const light =
+new THREE.DirectionalLight(
+0xffffff,
+3
+);
 
-<span>⚪</span>
+light.position.set(3,5,4);
 
-<h3>Enamel</h3>
-
-<p>Hardest tissue of the human body.</p>
-
-</div>
-
-
-<div class="anatomy-card"
-onclick="showPart('Dentin')">
-
-<span>🟡</span>
-
-<h3>Dentin</h3>
-
-<p>Forms the bulk of the tooth.</p>
-
-</div>
+scene.add(light);
 
 
-<div class="anatomy-card"
-onclick="showPart('Pulp')">
+/* TOOTH */
 
-<span>🔴</span>
+const toothGroup =
+new THREE.Group();
 
-<h3>Pulp</h3>
-
-<p>Contains nerves and blood vessels.</p>
-
-</div>
+scene.add(toothGroup);
 
 
-<div class="anatomy-card"
-onclick="showPart('Root')">
+/* Crown */
 
-<span>🦷</span>
+const crownGeometry =
+new THREE.SphereGeometry(
+1.25,
+64,
+64
+);
 
-<h3>Root</h3>
+const toothMaterial =
+new THREE.MeshStandardMaterial({
+color:0xf4f1df,
+roughness:.3,
+metalness:0
+});
 
-<p>Anchors the tooth inside bone.</p>
+const crown =
+new THREE.Mesh(
+crownGeometry,
+toothMaterial
+);
 
-</div>
+crown.scale.set(
+1,
+1.15,
+.9
+);
 
+crown.position.y=.7;
 
-<div class="anatomy-card"
-onclick="showPart('Cementum')">
-
-<span>🟤</span>
-
-<h3>Cementum</h3>
-
-<p>Covers the root surface.</p>
-
-</div>
-
-
-<div class="anatomy-card"
-onclick="showPart('Periodontium')">
-
-<span>🦴</span>
-
-<h3>Periodontium</h3>
-
-<p>Supporting structures of the tooth.</p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+toothGroup.add(crown);
 
 
-<footer>
+/* Roots */
 
-DentalBuddy 3D<br>
-Educational use for dental students,
-interns and dentists.
+function createRoot(
+x,
+rotation
+){
 
-</footer>
+const geometry =
+new THREE.ConeGeometry(
+.28,
+2.2,
+48
+);
 
+const material =
+new THREE.MeshStandardMaterial({
+color:0xe5dfc9,
+roughness:.4
+});
 
-<script>
+const root =
+new THREE.Mesh(
+geometry,
+material
+);
 
-const information={
+root.position.set(
+x,
+-1.0,
+0
+);
 
-Enamel:{
-text:"Enamel is the highly mineralized outer covering of the anatomical crown.",
-exam:"Enamel is the hardest tissue in the human body."
-},
+root.rotation.z =
+rotation;
 
-Dentin:{
-text:"Dentin forms the major bulk of the tooth and lies beneath enamel and cementum.",
-exam:"Dentin is less mineralized than enamel and is sensitive because of dentinal tubules."
-},
-
-Pulp:{
-text:"Dental pulp is the soft connective tissue located inside the pulp chamber and root canals.",
-exam:"Pulp contains blood vessels, nerves and connective tissue."
-},
-
-Root:{
-text:"The root anchors the tooth in the alveolar bone through the periodontal attachment apparatus.",
-exam:"The root contains the root canal system containing pulp tissue."
-},
-
-Cementum:{
-text:"Cementum is a mineralized tissue covering the anatomical root surface.",
-exam:"Cementum provides attachment for periodontal ligament fibers."
-},
-
-Periodontium:{
-text:"The periodontium consists of gingiva, periodontal ligament, cementum and alveolar bone.",
-exam:"The periodontium supports and protects the tooth."
+toothGroup.add(root);
 }
+
+createRoot(-.55,-.12);
+createRoot(0,0);
+createRoot(.55,.12);
+
+
+/* Pulp */
+
+const pulpGeometry =
+new THREE.SphereGeometry(
+.42,
+32,
+32
+);
+
+const pulpMaterial =
+new THREE.MeshStandardMaterial({
+color:0xd94b4b,
+transparent:true,
+opacity:.9
+});
+
+const pulp =
+new THREE.Mesh(
+pulpGeometry,
+pulpMaterial
+);
+
+pulp.scale.set(
+.7,
+1.5,
+.7
+);
+
+pulp.position.y=.5;
+
+toothGroup.add(pulp);
+
+
+/* CONTROLS */
+
+const controls =
+new OrbitControls(
+camera,
+renderer.domElement
+);
+
+controls.enableDamping=true;
+
+controls.minDistance=3;
+controls.maxDistance=8;
+
+
+/* RESET */
+
+window.resetView=function(){
+
+camera.position.set(
+0,
+1.5,
+5
+);
+
+controls.target.set(
+0,
+0,
+0
+);
+
+controls.update();
 
 };
 
 
-function showPart(part){
+/* RESIZE */
 
-const data=information[part];
+window.addEventListener(
+"resize",
+()=>{
 
-document.getElementById("info").innerHTML=`
+camera.aspect =
+container.clientWidth /
+container.clientHeight;
 
-<h2>${part}</h2>
+camera.updateProjectionMatrix();
 
-<p>
-${data.text}
-</p>
+renderer.setSize(
+container.clientWidth,
+container.clientHeight
+);
 
-<div class="exam">
-
-<strong>🎯 Exam Point:</strong><br>
-
-${data.exam}
-
-</div>
-
-`;
-
-}
+});
 
 
-function showTooth(){
+/* ANIMATION */
 
-document.getElementById("info").innerHTML=`
+function animate(){
 
-<h2>🦷 Tooth Anatomy</h2>
+requestAnimationFrame(animate);
 
-<p>
-A tooth is composed of specialized hard
-and soft tissues arranged to provide
-function, sensation and support.
-</p>
+controls.update();
 
-<div class="exam">
-
-<strong>🎯 Exam Point:</strong><br>
-
-Enamel → Dentin → Pulp
-<br>
-Root → Cementum → Periodontium
-
-</div>
-
-`;
+renderer.render(
+scene,
+camera
+);
 
 }
 
-
-function rotateTooth(){
-
-const tooth=document.querySelector(".tooth");
-
-tooth.style.animation="none";
-
-tooth.style.transform="rotateY(360deg)";
-
-setTimeout(()=>{
-
-tooth.style.transform="";
-
-tooth.style.animation=
-"float 4s ease-in-out infinite";
-
-},700);
-
-}
+animate();
 
 </script>
 
