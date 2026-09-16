@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>DentalBuddy 3D</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #07111f;
+  color: white;
+  min-height: 100vh;
+}
+
+header {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg,#102a43,#0b7285);
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.subtitle {
+  margin-top: 6px;
+  opacity: .8;
+  font-size: 14px;
+}
+
+.container {
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.hero {
+  text-align: center;
+  padding: 25px 10px;
+}
+
+.hero h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: #b9c7d6;
+  line-height: 1.5;
+}
+
+/* 3D TOOTH */
+
+.tooth-container {
+  height: 260px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 800px;
+}
+
+.tooth {
+  width: 120px;
+  height: 155px;
+  position: relative;
+
+  background: linear-gradient(
+    135deg,
+    #fff,
+    #dce7ed
+  );
+
+  border-radius:
+    45% 45% 35% 35% /
+    35% 35% 55% 55%;
+
+  box-shadow:
+    inset -15px -15px 25px rgba(0,0,0,.15),
+    0 25px 40px rgba(0,0,0,.4);
+
+  animation: rotateTooth 7s linear infinite;
+}
+
+.tooth:before {
+  content: "";
+  position: absolute;
+
+  width: 75px;
+  height: 65px;
+
+  left: 22px;
+  top: -25px;
+
+  background: linear-gradient(
+    135deg,
+    #ffffff,
+    #dbe7ed
+  );
+
+  border-radius: 50%;
+}
+
+.root1,
+.root2,
+.root3 {
+  position: absolute;
+  background: #e4edf0;
+  width: 25px;
+  height: 70px;
+  bottom: -50px;
+  border-radius: 40%;
+}
+
+.root1 {
+  left: 20px;
+  transform: rotate(8deg);
+}
+
+.root2 {
+  left: 48px;
+  height: 80px;
+}
+
+.root3 {
+  right: 18px;
+  transform: rotate(-8deg);
+}
+
+@keyframes rotateTooth {
+
+  0% {
+    transform: rotateY(0deg);
+  }
+
+  50% {
+    transform: rotateY(180deg);
+  }
+
+  100% {
+    transform: rotateY(360deg);
+  }
+
+}
+
+/* CARDS */
+
+.section-title {
+  margin: 25px 0 15px;
+  font-size: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.card {
+  padding: 18px;
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #10263d,
+      #0b1727
+    );
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  transition: .2s;
+
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: #36c5d8;
+}
+
+.icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  font-size: 16px;
+}
+
+.card p {
+  margin-top: 6px;
+  color: #9fb0c0;
+  font-size: 12px;
+}
+
+.progress {
+  margin-top: 25px;
+  padding: 18px;
+  background: #10263d;
+  border-radius: 18px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #26394d;
+  border-radius: 10px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 25%;
+  height: 100%;
+  background: #35c4d8;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #20b8cf;
+  color: white;
+
+  font-size: 16px;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: #718295;
+  font-size: 12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🦷 DentalBuddy 3D
+</div>
+
+<div class="subtitle">
+Learn • Practice • Visualize • Master Dentistry
+</div>
+
+</header>
+
+
+<div class="container">
+
+<section class="hero">
+
+<h1>
+Your 3D Dental Learning Lab
+</h1>
+
+<p>
+Understand dentistry visually instead of
+just memorizing it.
+</p>
+
+</section>
+
+
+<!-- 3D TOOTH -->
+
+<div class="tooth-container">
+
+<div class="tooth">
+
+<div class="root1"></div>
+<div class="root2"></div>
+<div class="root3"></div>
+
+</div>
+
+</div>
+
+
+<h2 class="section-title">
+Explore DentalBuddy
+</h2>
+
+
+<div class="grid">
+
+<div class="card">
+
+<div class="icon">🦷</div>
+
+<h3>3D Tooth Explorer</h3>
+
+<p>
+Explore tooth anatomy
+interactively.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🔬</div>
+
+<h3>RCT Simulator</h3>
+
+<p>
+Learn root canal treatment
+step-by-step.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🩺</div>
+
+<h3>Clinical Cases</h3>
+
+<p>
+Practice diagnosis and
+treatment planning.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🎯</div>
+
+<h3>BDS Viva</h3>
+
+<p>
+Practice viva questions
+and improve your score.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">📚</div>
+
+<h3>Exam Mode</h3>
+
+<p>
+Prepare for BDS exams
+and competitive exams.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🎥</div>
+
+<h3>Visual Library</h3>
+
+<p>
+Learn using images,
+animations and videos.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="progress">
+
+<h3>📊 Your Learning Progress</h3>
+
+<p style="margin-top:8px;color:#9fb0c0;">
+Dental fundamentals
+</p>
+
+<div class="progress-bar">
+
+<div class="progress-fill"></div>
+
+</div>
+
+</div>
+
+
+<button onclick="startLearning()">
+
+🚀 Start Learning
+
+</button>
+
+</div>
+
+
+<footer>
+
+DentalBuddy 3D • Educational platform for
+dental students & dentists
+
+</footer>
+
+
+<script>
+
+function startLearning() {
+
+  alert(
+    "Welcome to DentalBuddy 3D! 🦷\n\n" +
+    "Your dental learning journey starts here."
+  );
+
+}
+
+</script>
+
+</body>
+</html>
