@@ -1,250 +1,267 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+content="width=device-width, initial-scale=1.0">
 
 <title>DentalBuddy 3D</title>
 
 <style>
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background: #07111f;
-  color: white;
-  min-height: 100vh;
+body{
+font-family:Arial,sans-serif;
+background:#06111f;
+color:white;
+min-height:100vh;
 }
 
-header {
-  padding: 20px;
-  text-align: center;
-  background: linear-gradient(135deg,#102a43,#0b7285);
+header{
+padding:18px;
+text-align:center;
+background:linear-gradient(135deg,#102a43,#087f8c);
 }
 
-.logo {
-  font-size: 28px;
-  font-weight: bold;
+.logo{
+font-size:25px;
+font-weight:bold;
 }
 
-.subtitle {
-  margin-top: 6px;
-  opacity: .8;
-  font-size: 14px;
+.subtitle{
+font-size:12px;
+opacity:.8;
+margin-top:5px;
 }
 
-.container {
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
+.container{
+max-width:650px;
+margin:auto;
+padding:18px;
 }
 
-.hero {
-  text-align: center;
-  padding: 25px 10px;
+h1{
+font-size:26px;
+margin-bottom:8px;
 }
 
-.hero h1 {
-  font-size: 30px;
-  margin-bottom: 10px;
+.intro{
+color:#aab9c8;
+font-size:14px;
+line-height:1.5;
+margin-bottom:20px;
 }
 
-.hero p {
-  color: #b9c7d6;
-  line-height: 1.5;
+/* 3D AREA */
+
+.viewer{
+height:330px;
+background:
+radial-gradient(circle at center,#183b50,#071522 70%);
+border-radius:25px;
+display:flex;
+align-items:center;
+justify-content:center;
+perspective:900px;
+overflow:hidden;
+position:relative;
 }
 
-/* 3D TOOTH */
+.tooth{
+width:145px;
+height:185px;
+position:relative;
 
-.tooth-container {
-  height: 260px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  perspective: 800px;
+background:linear-gradient(
+135deg,
+#ffffff,
+#d8e3e7
+);
+
+border-radius:
+48% 48% 35% 35% /
+35% 35% 58% 58%;
+
+box-shadow:
+inset -18px -18px 30px rgba(0,0,0,.15),
+0 25px 50px rgba(0,0,0,.45);
+
+transform-style:preserve-3d;
+
+animation:float 4s ease-in-out infinite;
+cursor:pointer;
+
+transition:.4s;
 }
 
-.tooth {
-  width: 120px;
-  height: 155px;
-  position: relative;
-
-  background: linear-gradient(
-    135deg,
-    #fff,
-    #dce7ed
-  );
-
-  border-radius:
-    45% 45% 35% 35% /
-    35% 35% 55% 55%;
-
-  box-shadow:
-    inset -15px -15px 25px rgba(0,0,0,.15),
-    0 25px 40px rgba(0,0,0,.4);
-
-  animation: rotateTooth 7s linear infinite;
+.tooth:hover{
+transform:rotateY(20deg) scale(1.05);
 }
 
-.tooth:before {
-  content: "";
-  position: absolute;
+@keyframes float{
 
-  width: 75px;
-  height: 65px;
-
-  left: 22px;
-  top: -25px;
-
-  background: linear-gradient(
-    135deg,
-    #ffffff,
-    #dbe7ed
-  );
-
-  border-radius: 50%;
+0%,100%{
+transform:translateY(0) rotateY(-15deg);
 }
 
-.root1,
-.root2,
-.root3 {
-  position: absolute;
-  background: #e4edf0;
-  width: 25px;
-  height: 70px;
-  bottom: -50px;
-  border-radius: 40%;
+50%{
+transform:translateY(-10px) rotateY(15deg);
 }
-
-.root1 {
-  left: 20px;
-  transform: rotate(8deg);
-}
-
-.root2 {
-  left: 48px;
-  height: 80px;
-}
-
-.root3 {
-  right: 18px;
-  transform: rotate(-8deg);
-}
-
-@keyframes rotateTooth {
-
-  0% {
-    transform: rotateY(0deg);
-  }
-
-  50% {
-    transform: rotateY(180deg);
-  }
-
-  100% {
-    transform: rotateY(360deg);
-  }
 
 }
 
-/* CARDS */
+/* roots */
 
-.section-title {
-  margin: 25px 0 15px;
-  font-size: 20px;
+.root{
+position:absolute;
+bottom:-65px;
+background:#dce7ea;
+width:35px;
+height:85px;
+border-radius:50%;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+.root.left{
+left:20px;
+transform:rotate(8deg);
 }
 
-.card {
-  padding: 18px;
-  border-radius: 18px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #10263d,
-      #0b1727
-    );
-
-  border: 1px solid rgba(255,255,255,.08);
-
-  transition: .2s;
-
-  cursor: pointer;
+.root.center{
+left:55px;
+height:95px;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  border-color: #36c5d8;
+.root.right{
+right:20px;
+transform:rotate(-8deg);
 }
 
-.icon {
-  font-size: 30px;
-  margin-bottom: 10px;
+/* tooth shine */
+
+.shine{
+position:absolute;
+width:35px;
+height:70px;
+background:rgba(255,255,255,.55);
+border-radius:50%;
+left:22px;
+top:35px;
+transform:rotate(20deg);
 }
 
-.card h3 {
-  font-size: 16px;
+/* controls */
+
+.controls{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:15px;
 }
 
-.card p {
-  margin-top: 6px;
-  color: #9fb0c0;
-  font-size: 12px;
+.control{
+padding:13px;
+border-radius:14px;
+background:#10263b;
+border:1px solid #1c4058;
+color:white;
+font-size:14px;
+cursor:pointer;
 }
 
-.progress {
-  margin-top: 25px;
-  padding: 18px;
-  background: #10263d;
-  border-radius: 18px;
+.control:active{
+transform:scale(.97);
 }
 
-.progress-bar {
-  height: 8px;
-  background: #26394d;
-  border-radius: 10px;
-  margin-top: 12px;
-  overflow: hidden;
+/* info */
+
+.info{
+margin-top:18px;
+background:#0d2033;
+border-radius:20px;
+padding:20px;
+border:1px solid #183b50;
 }
 
-.progress-fill {
-  width: 25%;
-  height: 100%;
-  background: #35c4d8;
+.info h2{
+font-size:20px;
+margin-bottom:8px;
 }
 
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 20px;
-
-  border: none;
-  border-radius: 14px;
-
-  background: #20b8cf;
-  color: white;
-
-  font-size: 16px;
-  font-weight: bold;
+.info p{
+color:#b8c6d3;
+font-size:14px;
+line-height:1.6;
 }
 
-footer {
-  text-align: center;
-  padding: 30px;
-  color: #718295;
-  font-size: 12px;
+.exam{
+margin-top:14px;
+padding:12px;
+border-radius:12px;
+background:#102d3d;
+font-size:13px;
+line-height:1.5;
+}
+
+.exam strong{
+color:#4dd7df;
+}
+
+/* anatomy cards */
+
+.section{
+margin-top:25px;
+}
+
+.section h2{
+margin-bottom:12px;
+}
+
+.anatomy{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.anatomy-card{
+background:#10263b;
+padding:15px;
+border-radius:15px;
+cursor:pointer;
+border:1px solid transparent;
+}
+
+.anatomy-card:hover{
+border-color:#39c8d5;
+}
+
+.anatomy-card span{
+font-size:25px;
+display:block;
+margin-bottom:7px;
+}
+
+.anatomy-card h3{
+font-size:14px;
+}
+
+.anatomy-card p{
+font-size:11px;
+color:#8fa3b5;
+margin-top:5px;
+}
+
+footer{
+text-align:center;
+padding:30px;
+font-size:11px;
+color:#667b8f;
 }
 
 </style>
@@ -259,7 +276,7 @@ footer {
 </div>
 
 <div class="subtitle">
-Learn • Practice • Visualize • Master Dentistry
+Learn • Visualize • Practice • Master Dentistry
 </div>
 
 </header>
@@ -267,170 +284,267 @@ Learn • Practice • Visualize • Master Dentistry
 
 <div class="container">
 
-<section class="hero">
-
 <h1>
-Your 3D Dental Learning Lab
+3D Tooth Explorer
 </h1>
 
-<p>
-Understand dentistry visually instead of
-just memorizing it.
+<p class="intro">
+Tap different parts of the tooth to understand
+anatomy in a simple, exam-friendly way.
 </p>
 
-</section>
 
+<div class="viewer">
 
-<!-- 3D TOOTH -->
+<div class="tooth" onclick="showTooth()">
 
-<div class="tooth-container">
+<div class="shine"></div>
 
-<div class="tooth">
-
-<div class="root1"></div>
-<div class="root2"></div>
-<div class="root3"></div>
+<div class="root left"></div>
+<div class="root center"></div>
+<div class="root right"></div>
 
 </div>
 
 </div>
 
 
-<h2 class="section-title">
-Explore DentalBuddy
+<div class="controls">
+
+<button class="control"
+onclick="rotateTooth()">
+🔄 Rotate
+</button>
+
+<button class="control"
+onclick="showTooth()">
+🦷 Explore
+</button>
+
+</div>
+
+
+<div class="info" id="info">
+
+<h2>🦷 Tooth Anatomy</h2>
+
+<p>
+Select an anatomical structure below
+to learn about it.
+</p>
+
+<div class="exam">
+
+<strong>🎯 Exam Point:</strong>
+
+The tooth consists of enamel,
+dentin, pulp and cementum.
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>
+Explore Anatomy
 </h2>
 
+<div class="anatomy">
 
-<div class="grid">
+<div class="anatomy-card"
+onclick="showPart('Enamel')">
 
-<div class="card">
+<span>⚪</span>
 
-<div class="icon">🦷</div>
+<h3>Enamel</h3>
 
-<h3>3D Tooth Explorer</h3>
-
-<p>
-Explore tooth anatomy
-interactively.
-</p>
+<p>Hardest tissue of the human body.</p>
 
 </div>
 
 
-<div class="card">
+<div class="anatomy-card"
+onclick="showPart('Dentin')">
 
-<div class="icon">🔬</div>
+<span>🟡</span>
 
-<h3>RCT Simulator</h3>
+<h3>Dentin</h3>
 
-<p>
-Learn root canal treatment
-step-by-step.
-</p>
+<p>Forms the bulk of the tooth.</p>
 
 </div>
 
 
-<div class="card">
+<div class="anatomy-card"
+onclick="showPart('Pulp')">
 
-<div class="icon">🩺</div>
+<span>🔴</span>
 
-<h3>Clinical Cases</h3>
+<h3>Pulp</h3>
 
-<p>
-Practice diagnosis and
-treatment planning.
-</p>
+<p>Contains nerves and blood vessels.</p>
 
 </div>
 
 
-<div class="card">
+<div class="anatomy-card"
+onclick="showPart('Root')">
 
-<div class="icon">🎯</div>
+<span>🦷</span>
 
-<h3>BDS Viva</h3>
+<h3>Root</h3>
 
-<p>
-Practice viva questions
-and improve your score.
-</p>
+<p>Anchors the tooth inside bone.</p>
 
 </div>
 
 
-<div class="card">
+<div class="anatomy-card"
+onclick="showPart('Cementum')">
 
-<div class="icon">📚</div>
+<span>🟤</span>
 
-<h3>Exam Mode</h3>
+<h3>Cementum</h3>
 
-<p>
-Prepare for BDS exams
-and competitive exams.
-</p>
+<p>Covers the root surface.</p>
 
 </div>
 
 
-<div class="card">
+<div class="anatomy-card"
+onclick="showPart('Periodontium')">
 
-<div class="icon">🎥</div>
+<span>🦴</span>
 
-<h3>Visual Library</h3>
+<h3>Periodontium</h3>
 
-<p>
-Learn using images,
-animations and videos.
-</p>
+<p>Supporting structures of the tooth.</p>
 
 </div>
 
 </div>
 
-
-<div class="progress">
-
-<h3>📊 Your Learning Progress</h3>
-
-<p style="margin-top:8px;color:#9fb0c0;">
-Dental fundamentals
-</p>
-
-<div class="progress-bar">
-
-<div class="progress-fill"></div>
-
 </div>
-
-</div>
-
-
-<button onclick="startLearning()">
-
-🚀 Start Learning
-
-</button>
 
 </div>
 
 
 <footer>
 
-DentalBuddy 3D • Educational platform for
-dental students & dentists
+DentalBuddy 3D<br>
+Educational use for dental students,
+interns and dentists.
 
 </footer>
 
 
 <script>
 
-function startLearning() {
+const information={
 
-  alert(
-    "Welcome to DentalBuddy 3D! 🦷\n\n" +
-    "Your dental learning journey starts here."
-  );
+Enamel:{
+text:"Enamel is the highly mineralized outer covering of the anatomical crown.",
+exam:"Enamel is the hardest tissue in the human body."
+},
+
+Dentin:{
+text:"Dentin forms the major bulk of the tooth and lies beneath enamel and cementum.",
+exam:"Dentin is less mineralized than enamel and is sensitive because of dentinal tubules."
+},
+
+Pulp:{
+text:"Dental pulp is the soft connective tissue located inside the pulp chamber and root canals.",
+exam:"Pulp contains blood vessels, nerves and connective tissue."
+},
+
+Root:{
+text:"The root anchors the tooth in the alveolar bone through the periodontal attachment apparatus.",
+exam:"The root contains the root canal system containing pulp tissue."
+},
+
+Cementum:{
+text:"Cementum is a mineralized tissue covering the anatomical root surface.",
+exam:"Cementum provides attachment for periodontal ligament fibers."
+},
+
+Periodontium:{
+text:"The periodontium consists of gingiva, periodontal ligament, cementum and alveolar bone.",
+exam:"The periodontium supports and protects the tooth."
+}
+
+};
+
+
+function showPart(part){
+
+const data=information[part];
+
+document.getElementById("info").innerHTML=`
+
+<h2>${part}</h2>
+
+<p>
+${data.text}
+</p>
+
+<div class="exam">
+
+<strong>🎯 Exam Point:</strong><br>
+
+${data.exam}
+
+</div>
+
+`;
+
+}
+
+
+function showTooth(){
+
+document.getElementById("info").innerHTML=`
+
+<h2>🦷 Tooth Anatomy</h2>
+
+<p>
+A tooth is composed of specialized hard
+and soft tissues arranged to provide
+function, sensation and support.
+</p>
+
+<div class="exam">
+
+<strong>🎯 Exam Point:</strong><br>
+
+Enamel → Dentin → Pulp
+<br>
+Root → Cementum → Periodontium
+
+</div>
+
+`;
+
+}
+
+
+function rotateTooth(){
+
+const tooth=document.querySelector(".tooth");
+
+tooth.style.animation="none";
+
+tooth.style.transform="rotateY(360deg)";
+
+setTimeout(()=>{
+
+tooth.style.transform="";
+
+tooth.style.animation=
+"float 4s ease-in-out infinite";
+
+},700);
 
 }
 
