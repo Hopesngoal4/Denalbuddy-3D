@@ -33,23 +33,32 @@ p{
 
 #viewer{
   width:100%;
-  height:70vh;
-  min-height:450px;
+  height:65vh;
+  min-height:420px;
   touch-action:none;
 }
 
-.info{
-  padding:15px 20px 30px;
+.controls{
+  padding:12px 10px;
 }
 
 button{
-  padding:13px 20px;
+  padding:11px 16px;
   border:0;
   border-radius:12px;
   background:#19b8ca;
   color:white;
   font-weight:bold;
-  margin:5px;
+  margin:4px;
+}
+
+button.active{
+  background:#ffffff;
+  color:#087f8c;
+}
+
+.info{
+  padding:10px 20px 30px;
 }
 </style>
 </head>
@@ -63,7 +72,38 @@ button{
 
 <div id="viewer"></div>
 
+<div class="controls">
+
+<button onclick="externalView()" id="externalBtn">
+External
+</button>
+
+<button onclick="sectionView()" id="sectionBtn">
+Section
+</button>
+
+<button onclick="pulpView()" id="pulpBtn">
+Pulp
+</button>
+
+<br>
+
+<button onclick="toggleLabels()">
+🏷 Labels
+</button>
+
+<button onclick="toggleAutoRotate()">
+🔄 Auto Rotate
+</button>
+
+<button onclick="resetView()">
+↩ Reset
+</button>
+
+</div>
+
 <div class="info">
+
 <h2>3D Tooth Explorer</h2>
 
 <p>
@@ -71,33 +111,31 @@ button{
 🤏 Pinch to zoom
 </p>
 
-<button onclick="resetView()">Reset View</button>
 </div>
 
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
-  }
-}
-</script>
 
 <script type="module">
 
 import * as THREE from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
 
-import { OrbitControls } from
+import {OrbitControls} from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
 
+
+/* =========================
+   BASIC SETUP
+========================= */
 
 const container =
 document.getElementById("viewer");
 
-const scene = new THREE.Scene();
+const scene =
+new THREE.Scene();
 
 scene.background =
 new THREE.Color(0x06111f);
+
 
 const camera =
 new THREE.PerspectiveCamera(
@@ -108,7 +146,12 @@ container.clientHeight,
 100
 );
 
-camera.position.set(0,1.5,5);
+camera.position.set(
+0,
+1.5,
+5
+);
+
 
 const renderer =
 new THREE.WebGLRenderer({
@@ -124,10 +167,14 @@ container.clientWidth,
 container.clientHeight
 );
 
-container.appendChild(renderer.domElement);
+container.appendChild(
+renderer.domElement
+);
 
 
-/* LIGHTING */
+/* =========================
+   LIGHTING
+========================= */
 
 const ambient =
 new THREE.AmbientLight(
@@ -137,18 +184,25 @@ new THREE.AmbientLight(
 
 scene.add(ambient);
 
+
 const light =
 new THREE.DirectionalLight(
 0xffffff,
 3
 );
 
-light.position.set(3,5,4);
+light.position.set(
+3,
+5,
+4
+);
 
 scene.add(light);
 
 
-/* TOOTH */
+/* =========================
+   TOOTH GROUP
+========================= */
 
 const toothGroup =
 new THREE.Group();
@@ -156,7 +210,9 @@ new THREE.Group();
 scene.add(toothGroup);
 
 
-/* Crown */
+/* =========================
+   ENAMEL / CROWN
+========================= */
 
 const crownGeometry =
 new THREE.SphereGeometry(
@@ -165,31 +221,75 @@ new THREE.SphereGeometry(
 64
 );
 
-const toothMaterial =
+const enamelMaterial =
 new THREE.MeshStandardMaterial({
-color:0xf4f1df,
-roughness:.3,
+color:0xf7f3df,
+roughness:0.25,
 metalness:0
 });
 
 const crown =
 new THREE.Mesh(
 crownGeometry,
-toothMaterial
+enamelMaterial
 );
 
 crown.scale.set(
 1,
 1.15,
-.9
+0.9
 );
 
-crown.position.y=.7;
+crown.position.y=0.7;
 
 toothGroup.add(crown);
 
 
-/* Roots */
+/* =========================
+   DENTIN
+========================= */
+
+const dentinGeometry =
+new THREE.SphereGeometry(
+0.95,
+48,
+48
+);
+
+const dentinMaterial =
+new THREE.MeshStandardMaterial({
+color:0xe6cfa0,
+roughness:0.5
+});
+
+const dentin =
+new THREE.Mesh(
+dentinGeometry,
+dentinMaterial
+);
+
+dentin.scale.set(
+1,
+1.2,
+0.9
+);
+
+dentin.position.y=0.7;
+
+dentin.visible=false;
+
+toothGroup.add(dentin);
+
+
+/* =========================
+   ROOTS
+========================= */
+
+const rootGroup =
+new THREE.Group();
+
+toothGroup.add(rootGroup);
+
 
 function createRoot(
 x,
@@ -198,7 +298,7 @@ rotation
 
 const geometry =
 new THREE.ConeGeometry(
-.28,
+0.28,
 2.2,
 48
 );
@@ -206,7 +306,7 @@ new THREE.ConeGeometry(
 const material =
 new THREE.MeshStandardMaterial({
 color:0xe5dfc9,
-roughness:.4
+roughness:0.4
 });
 
 const root =
@@ -217,26 +317,30 @@ material
 
 root.position.set(
 x,
--1.0,
+-1,
 0
 );
 
 root.rotation.z =
 rotation;
 
-toothGroup.add(root);
+rootGroup.add(root);
+
 }
 
-createRoot(-.55,-.12);
+
+createRoot(-0.55,-0.12);
 createRoot(0,0);
-createRoot(.55,.12);
+createRoot(0.55,0.12);
 
 
-/* Pulp */
+/* =========================
+   PULP CHAMBER
+========================= */
 
 const pulpGeometry =
 new THREE.SphereGeometry(
-.42,
+0.42,
 32,
 32
 );
@@ -245,7 +349,7 @@ const pulpMaterial =
 new THREE.MeshStandardMaterial({
 color:0xd94b4b,
 transparent:true,
-opacity:.9
+opacity:0.9
 });
 
 const pulp =
@@ -255,17 +359,167 @@ pulpMaterial
 );
 
 pulp.scale.set(
-.7,
+0.7,
 1.5,
-.7
+0.7
 );
 
-pulp.position.y=.5;
+pulp.position.y=0.5;
 
 toothGroup.add(pulp);
 
 
-/* CONTROLS */
+/* =========================
+   ROOT CANALS
+========================= */
+
+const canalMaterial =
+new THREE.MeshStandardMaterial({
+color:0xe45b5b
+});
+
+
+function createCanal(x){
+
+const geometry =
+new THREE.CylinderGeometry(
+0.07,
+0.04,
+1.8,
+20
+);
+
+const canal =
+new THREE.Mesh(
+geometry,
+canalMaterial
+);
+
+canal.position.set(
+x,
+-0.65,
+0
+);
+
+toothGroup.add(canal);
+
+return canal;
+
+}
+
+
+const canal1 =
+createCanal(-0.55);
+
+const canal2 =
+createCanal(0);
+
+const canal3 =
+createCanal(0.55);
+
+
+/* =========================
+   LABELS
+========================= */
+
+const labels=[];
+
+function createLabel(
+text,
+position
+){
+
+const canvas =
+document.createElement("canvas");
+
+canvas.width=512;
+canvas.height=128;
+
+const ctx =
+canvas.getContext("2d");
+
+ctx.fillStyle="white";
+ctx.font="bold 42px Arial";
+
+ctx.fillText(
+text,
+20,
+75
+);
+
+const texture =
+new THREE.CanvasTexture(
+canvas
+);
+
+const material =
+new THREE.SpriteMaterial({
+map:texture,
+transparent:true
+});
+
+const sprite =
+new THREE.Sprite(material);
+
+sprite.position.copy(
+position
+);
+
+sprite.scale.set(
+1.4,
+0.35,
+1
+);
+
+scene.add(sprite);
+
+labels.push(sprite);
+
+}
+
+
+/* Create labels */
+
+createLabel(
+"Enamel",
+new THREE.Vector3(
+1.5,
+1.1,
+0
+)
+);
+
+createLabel(
+"Dentin",
+new THREE.Vector3(
+1.5,
+0.3,
+0
+)
+);
+
+createLabel(
+"Pulp",
+new THREE.Vector3(
+1.2,
+0.0,
+0
+)
+);
+
+createLabel(
+"Root Canal",
+new THREE.Vector3(
+1.4,
+-1.1,
+0
+)
+);
+
+
+/* =========================
+   CONTROLS
+========================= */
 
 const controls =
 new OrbitControls(
@@ -276,10 +530,115 @@ renderer.domElement
 controls.enableDamping=true;
 
 controls.minDistance=3;
+
 controls.maxDistance=8;
 
 
-/* RESET */
+/* =========================
+   STATE
+========================= */
+
+let labelsVisible=false;
+
+let autoRotate=false;
+
+let currentView="external";
+
+
+labels.forEach(
+label=>{
+label.visible=false;
+}
+);
+
+
+/* =========================
+   VIEW FUNCTIONS
+========================= */
+
+window.externalView=function(){
+
+currentView="external";
+
+crown.visible=true;
+dentin.visible=false;
+pulp.visible=true;
+
+canal1.visible=false;
+canal2.visible=false;
+canal3.visible=false;
+
+};
+
+
+window.sectionView=function(){
+
+currentView="section";
+
+crown.visible=false;
+
+dentin.visible=true;
+
+pulp.visible=true;
+
+canal1.visible=true;
+canal2.visible=true;
+canal3.visible=true;
+
+};
+
+
+window.pulpView=function(){
+
+currentView="pulp";
+
+crown.visible=false;
+
+dentin.visible=false;
+
+pulp.visible=true;
+
+canal1.visible=true;
+canal2.visible=true;
+canal3.visible=true;
+
+};
+
+
+/* =========================
+   LABEL TOGGLE
+========================= */
+
+window.toggleLabels=function(){
+
+labelsVisible=
+!labelsVisible;
+
+labels.forEach(
+label=>{
+label.visible=
+labelsVisible;
+}
+);
+
+};
+
+
+/* =========================
+   AUTO ROTATE
+========================= */
+
+window.toggleAutoRotate=function(){
+
+autoRotate=
+!autoRotate;
+
+};
+
+
+/* =========================
+   RESET
+========================= */
 
 window.resetView=function(){
 
@@ -297,16 +656,26 @@ controls.target.set(
 
 controls.update();
 
+externalView();
+
+toothGroup.rotation.set(
+0,
+0,
+0
+);
+
 };
 
 
-/* RESIZE */
+/* =========================
+   RESIZE
+========================= */
 
 window.addEventListener(
 "resize",
 ()=>{
 
-camera.aspect =
+camera.aspect=
 container.clientWidth /
 container.clientHeight;
 
@@ -320,13 +689,24 @@ container.clientHeight
 });
 
 
-/* ANIMATION */
+/* =========================
+   ANIMATION
+========================= */
 
 function animate(){
 
-requestAnimationFrame(animate);
+requestAnimationFrame(
+animate
+);
 
 controls.update();
+
+if(autoRotate){
+
+toothGroup.rotation.y
++=0.005;
+
+}
 
 renderer.render(
 scene,
