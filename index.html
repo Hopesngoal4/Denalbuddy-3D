@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>DentalBuddy 3D - RCT Simulator</title>
+<title>DentalBuddy 3D - RCT Challenge</title>
 
 <script type="importmap">
 {
@@ -58,7 +58,7 @@ margin-bottom:0;
 }
 
 
-/* SELECTOR */
+/* TOOTH SELECTOR */
 
 .selector{
 padding:14px 12px 5px;
@@ -88,8 +88,8 @@ font-weight:bold;
 
 #viewer{
 width:100%;
-height:52vh;
-min-height:360px;
+height:48vh;
+min-height:340px;
 touch-action:none;
 overflow:hidden;
 }
@@ -113,65 +113,119 @@ font-size:14px;
 cursor:pointer;
 }
 
-button.active{
-background:white;
-color:#087f8c;
+button:active{
+transform:scale(.97);
+}
+
+button.dark{
+background:#20364c;
 }
 
 
-/* RCT PANEL */
+/* CHALLENGE */
 
-.rct-panel{
+.challenge{
 width:92%;
-max-width:520px;
-margin:10px auto 20px;
-padding:18px;
+max-width:540px;
+margin:12px auto;
+padding:20px;
 background:#102a43;
-border-radius:18px;
+border-radius:20px;
 text-align:left;
 }
 
-.rct-panel h2{
+.challenge h2{
 margin-top:0;
 text-align:center;
 color:#5ee7f2;
 }
 
-.step{
-padding:12px;
-margin:7px 0;
-border-radius:12px;
+.challenge-question{
+font-size:17px;
+line-height:1.5;
+margin-bottom:15px;
+}
+
+
+/* OPTIONS */
+
+.option{
+width:100%;
+padding:14px;
+margin:8px 0;
+border:none;
+border-radius:13px;
 background:#0b1d30;
+color:white;
+text-align:left;
+font-size:15px;
 cursor:pointer;
 }
 
-.step.active{
-background:#19b8ca;
+.option:hover{
+background:#183b55;
 }
 
-.step.completed{
-opacity:.65;
+.option.correct{
+background:#177245;
 }
 
-.step-number{
+.option.wrong{
+background:#9b3030;
+}
+
+
+/* FEEDBACK */
+
+#feedback{
+display:none;
+margin-top:14px;
+padding:14px;
+border-radius:14px;
+background:#0b1d30;
+line-height:1.5;
+}
+
+#feedbackTitle{
 font-weight:bold;
+font-size:17px;
 }
 
-.step-description{
-font-size:13px;
+#feedbackText{
 color:#d5e5ed;
-margin-top:4px;
-line-height:1.4;
+margin-top:6px;
+}
+
+
+/* SCORE */
+
+.score-row{
+display:flex;
+justify-content:space-around;
+margin:15px 0;
+text-align:center;
+}
+
+.score-box{
+background:#0b1d30;
+padding:12px;
+border-radius:12px;
+min-width:90px;
+}
+
+.score-number{
+font-size:22px;
+font-weight:bold;
+color:#5ee7f2;
+}
+
+.score-label{
+font-size:11px;
+color:#b7c7d5;
 }
 
 
 /* PROGRESS */
-
-.progress-container{
-width:92%;
-max-width:520px;
-margin:10px auto;
-}
 
 .progress-background{
 height:10px;
@@ -187,33 +241,44 @@ background:#19b8ca;
 transition:width .3s;
 }
 
-#progressText{
-font-size:13px;
+.progress-text{
+font-size:12px;
 color:#b7c7d5;
 margin-top:6px;
+text-align:center;
 }
 
 
-/* INFO */
+/* START / RESULT */
 
-.info-card{
-width:92%;
-max-width:520px;
-margin:10px auto 30px;
-padding:18px;
-background:#0b1d30;
-border-radius:18px;
-text-align:left;
+#startScreen{
+text-align:center;
 }
 
-.info-card h3{
+#resultScreen{
+display:none;
+text-align:center;
+}
+
+.result-score{
+font-size:48px;
+font-weight:bold;
 color:#5ee7f2;
-margin-top:0;
+margin:10px;
 }
 
-.info-card p{
-color:#b7c7d5;
+.result-message{
+color:#d5e5ed;
 line-height:1.5;
+}
+
+
+/* HINT */
+
+.hint{
+margin-top:12px;
+font-size:12px;
+color:#8fa8b8;
 }
 
 </style>
@@ -229,7 +294,7 @@ line-height:1.5;
 <h1>🦷 DentalBuddy 3D</h1>
 
 <p>
-Interactive Dental Anatomy & RCT Learning
+Interactive RCT Learning
 </p>
 
 </header>
@@ -241,8 +306,7 @@ Interactive Dental Anatomy & RCT Learning
 Select Tooth
 </label>
 
-<select id="toothSelect"
-onchange="changeTooth()">
+<select id="toothSelect">
 
 <option value="46">
 46 — Mandibular First Molar
@@ -284,10 +348,6 @@ Pulp
 
 <br>
 
-<button onclick="toggleLabels()">
-🏷 Labels
-</button>
-
 <button onclick="toggleGhost()">
 👁 Ghost
 </button>
@@ -303,95 +363,99 @@ Pulp
 </div>
 
 
-<!-- RCT PANEL -->
 
-<div class="rct-panel">
+<!-- =====================================
+CHALLENGE
+===================================== -->
+
+<div class="challenge">
+
+
+<!-- START -->
+
+<div id="startScreen">
 
 <h2>
-🦷 RCT Simulator
+🎮 RCT Challenge
+</h2>
+
+<p class="challenge-question">
+
+Test your understanding of basic root canal
+treatment sequence.
+
+</p>
+
+<button onclick="startChallenge()">
+▶ Start Challenge
+</button>
+
+<p class="hint">
+
+Educational simulation only — not a substitute
+for clinical training or patient-specific treatment planning.
+
+</p>
+
+</div>
+
+
+
+<!-- GAME -->
+
+<div id="gameScreen"
+style="display:none;">
+
+<h2>
+🧠 RCT Challenge
 </h2>
 
 
-<div class="step active"
-id="step1"
-onclick="selectRCTStep(1)">
+<div class="score-row">
 
-<div class="step-number">
-1. Access Cavity
+<div class="score-box">
+
+<div class="score-number"
+id="score">
+0
 </div>
 
-<div class="step-description">
-Understand access preparation and locate the pulp chamber.
-</div>
-
-</div>
-
-
-<div class="step"
-id="step2"
-onclick="selectRCTStep(2)">
-
-<div class="step-number">
-2. Locate Canal Orifices
-</div>
-
-<div class="step-description">
-Identify the canal orifices on the pulpal floor.
+<div class="score-label">
+SCORE
 </div>
 
 </div>
 
 
-<div class="step"
-id="step3"
-onclick="selectRCTStep(3)">
+<div class="score-box">
 
-<div class="step-number">
-3. Working Length
+<div class="score-number"
+id="streak">
+0
 </div>
 
-<div class="step-description">
-Learn how working length is established and verified.
-</div>
-
-</div>
-
-
-<div class="step"
-id="step4"
-onclick="selectRCTStep(4)">
-
-<div class="step-number">
-4. Cleaning & Shaping
-</div>
-
-<div class="step-description">
-Understand sequential canal preparation concepts.
+<div class="score-label">
+STREAK
 </div>
 
 </div>
 
 
-<div class="step"
-id="step5"
-onclick="selectRCTStep(5)">
+<div class="score-box">
 
-<div class="step-number">
-5. Obturation
+<div class="score-number"
+id="questionNumber">
+1
 </div>
 
-<div class="step-description">
-Study three-dimensional filling of the prepared canal system.
+<div class="score-label">
+QUESTION
 </div>
 
 </div>
 
 </div>
 
-
-<!-- PROGRESS -->
-
-<div class="progress-container">
 
 <div class="progress-background">
 
@@ -399,27 +463,78 @@ Study three-dimensional filling of the prepared canal system.
 
 </div>
 
-<div id="progressText">
-RCT Progress: 0 / 5
+<div class="progress-text"
+id="progressText">
+
+Question 1 of 5
+
+</div>
+
+
+<div class="challenge-question"
+id="question">
+
+Question
+
+</div>
+
+
+<div id="options">
+
+</div>
+
+
+<div id="feedback">
+
+<div id="feedbackTitle">
+Feedback
+</div>
+
+<div id="feedbackText">
+Explanation
 </div>
 
 </div>
 
 
-<!-- INFORMATION -->
+<button
+id="nextButton"
+onclick="nextQuestion()"
+style="display:none;">
 
-<div class="info-card">
+Next Question →
 
-<h3 id="rctTitle">
-Step 1 — Access Cavity
-</h3>
+</button>
 
-<p id="rctDescription">
 
-The access cavity provides entry to the pulp chamber
-and allows identification of the canal orifices.
+</div>
+
+
+
+<!-- RESULT -->
+
+<div id="resultScreen">
+
+<h2>
+🏆 Challenge Complete
+</h2>
+
+<div class="result-score"
+id="finalScore">
+0
+</div>
+
+<p class="result-message"
+id="resultMessage">
 
 </p>
+
+<button onclick="restartChallenge()">
+🔄 Try Again
+</button>
+
+</div>
+
 
 </div>
 
@@ -429,7 +544,7 @@ and allows identification of the canal orifices.
 
 
 /* =====================================
-THREE
+THREE.JS
 ===================================== */
 
 import * as THREE from
@@ -441,7 +556,7 @@ import {OrbitControls} from
 
 
 /* =====================================
-BASIC SETUP
+SETUP
 ===================================== */
 
 const container=
@@ -493,7 +608,7 @@ renderer.domElement
 
 
 /* =====================================
-LIGHTING
+LIGHTS
 ===================================== */
 
 scene.add(
@@ -504,75 +619,48 @@ new THREE.AmbientLight(
 );
 
 
-const mainLight=
+const light=
 new THREE.DirectionalLight(
 0xffffff,
 3
 );
 
-mainLight.position.set(
+light.position.set(
 3,
 5,
 4
 );
 
-scene.add(
-mainLight
-);
-
-
-const fillLight=
-new THREE.DirectionalLight(
-0xffffff,
-1.5
-);
-
-fillLight.position.set(
--3,
-2,
-4
-);
-
-scene.add(
-fillLight
-);
+scene.add(light);
 
 
 
 /* =====================================
-TOOTH GROUP
+TOOTH
 ===================================== */
 
 const toothGroup=
 new THREE.Group();
 
-scene.add(
-toothGroup
-);
+scene.add(toothGroup);
 
 
+/* CROWN */
 
-/* =====================================
-CROWN
-===================================== */
+const crown=
+new THREE.Mesh(
 
-const crownGeometry=
 new THREE.SphereGeometry(
 1.25,
 64,
 64
-);
+),
 
-const enamelMaterial=
 new THREE.MeshStandardMaterial({
 color:0xf7f3df,
 roughness:.25
-});
+})
 
-const crown=
-new THREE.Mesh(
-crownGeometry,
-enamelMaterial
 );
 
 crown.scale.set(
@@ -581,39 +669,30 @@ crown.scale.set(
 .92
 );
 
-crown.position.y=
-.65;
+crown.position.y=.65;
 
-toothGroup.add(
-crown
-);
+toothGroup.add(crown);
 
 
 
-/* =====================================
-CUSPS
-===================================== */
-
-const cuspMaterial=
-new THREE.MeshStandardMaterial({
-color:0xf7f3df,
-roughness:.25
-});
-
+/* CUSPS */
 
 function createCusp(x,z){
 
-const geometry=
+const cusp=
+new THREE.Mesh(
+
 new THREE.SphereGeometry(
 .38,
 32,
 32
-);
+),
 
-const cusp=
-new THREE.Mesh(
-geometry,
-cuspMaterial
+new THREE.MeshStandardMaterial({
+color:0xf7f3df,
+roughness:.25
+})
+
 );
 
 cusp.scale.set(
@@ -628,9 +707,7 @@ x,
 z
 );
 
-toothGroup.add(
-cusp
-);
+toothGroup.add(cusp);
 
 return cusp;
 
@@ -651,9 +728,7 @@ createCusp(.55,.4);
 
 
 
-/* =====================================
-ROOTS
-===================================== */
+/* ROOTS */
 
 const rootGroup=
 new THREE.Group();
@@ -665,23 +740,20 @@ rootGroup
 
 function createRoot(x,rotation){
 
-const geometry=
+const root=
+new THREE.Mesh(
+
 new THREE.ConeGeometry(
 .30,
 2.35,
 48
-);
+),
 
-const material=
 new THREE.MeshStandardMaterial({
 color:0xe5dfc9,
 roughness:.42
-});
+})
 
-const root=
-new THREE.Mesh(
-geometry,
-material
 );
 
 root.position.set(
@@ -693,48 +765,32 @@ x,
 root.rotation.z=
 rotation;
 
-rootGroup.add(
-root
-);
-
-return root;
+rootGroup.add(root);
 
 }
 
 
-createRoot(
--.52,
--.14
-);
-
-createRoot(
-.52,
-.14
-);
+createRoot(-.52,-.14);
+createRoot(.52,.14);
 
 
 
-/* =====================================
-DENTIN
-===================================== */
+/* DENTIN */
 
-const dentinGeometry=
+const dentin=
+new THREE.Mesh(
+
 new THREE.SphereGeometry(
 .98,
 48,
 48
-);
+),
 
-const dentinMaterial=
 new THREE.MeshStandardMaterial({
 color:0xe2c995,
 roughness:.5
-});
+})
 
-const dentin=
-new THREE.Mesh(
-dentinGeometry,
-dentinMaterial
 );
 
 dentin.scale.set(
@@ -743,37 +799,29 @@ dentin.scale.set(
 .9
 );
 
-dentin.position.y=
-.65;
+dentin.position.y=.65;
 
 dentin.visible=false;
 
-toothGroup.add(
-dentin
-);
+toothGroup.add(dentin);
 
 
 
-/* =====================================
-PULP
-===================================== */
+/* PULP */
 
-const pulpGeometry=
+const pulp=
+new THREE.Mesh(
+
 new THREE.SphereGeometry(
 .42,
 32,
 32
-);
+),
 
-const pulpMaterial=
 new THREE.MeshStandardMaterial({
 color:0xd94b4b
-});
+})
 
-const pulp=
-new THREE.Mesh(
-pulpGeometry,
-pulpMaterial
 );
 
 pulp.scale.set(
@@ -782,41 +830,32 @@ pulp.scale.set(
 .7
 );
 
-pulp.position.y=
-.45;
+pulp.position.y=.45;
 
 pulp.visible=false;
 
-toothGroup.add(
-pulp
-);
+toothGroup.add(pulp);
 
 
 
-/* =====================================
-CANALS
-===================================== */
-
-const canalMaterial=
-new THREE.MeshStandardMaterial({
-color:0xe45b5b
-});
-
+/* CANALS */
 
 function createCanal(x,z){
 
-const geometry=
+const canal=
+new THREE.Mesh(
+
 new THREE.CylinderGeometry(
 .065,
 .035,
 1.9,
 20
-);
+),
 
-const canal=
-new THREE.Mesh(
-geometry,
-canalMaterial
+new THREE.MeshStandardMaterial({
+color:0xe45b5b
+})
+
 );
 
 canal.position.set(
@@ -827,9 +866,7 @@ z
 
 canal.visible=false;
 
-toothGroup.add(
-canal
-);
+toothGroup.add(canal);
 
 return canal;
 
@@ -837,46 +874,32 @@ return canal;
 
 
 const canal1=
-createCanal(
--.48,
--.12
-);
+createCanal(-.48,-.12);
 
 const canal2=
-createCanal(
--.48,
-.12
-);
+createCanal(-.48,.12);
 
 const canal3=
-createCanal(
-.48,
-0
-);
+createCanal(.48,0);
 
 
 
-/* =====================================
-ACCESS CAVITY
-===================================== */
+/* ACCESS CAVITY */
 
-const accessGeometry=
+const accessCavity=
+new THREE.Mesh(
+
 new THREE.CylinderGeometry(
 .32,
 .38,
 .12,
 32
-);
+),
 
-const accessMaterial=
 new THREE.MeshStandardMaterial({
-color:0x7b6751
-});
+color:0x80684f
+})
 
-const accessCavity=
-new THREE.Mesh(
-accessGeometry,
-accessMaterial
 );
 
 accessCavity.position.set(
@@ -893,30 +916,24 @@ accessCavity
 
 
 
-/* =====================================
-WORKING LENGTH FILES
-===================================== */
-
-const fileMaterial=
-new THREE.MeshStandardMaterial({
-color:0xffffff
-});
-
+/* FILES */
 
 function createFile(x){
 
-const geometry=
+const file=
+new THREE.Mesh(
+
 new THREE.CylinderGeometry(
 .025,
 .012,
 2.4,
 12
-);
+),
 
-const file=
-new THREE.Mesh(
-geometry,
-fileMaterial
+new THREE.MeshStandardMaterial({
+color:0xffffff
+})
+
 );
 
 file.position.set(
@@ -927,9 +944,7 @@ x,
 
 file.visible=false;
 
-toothGroup.add(
-file
-);
+toothGroup.add(file);
 
 return file;
 
@@ -944,30 +959,24 @@ createFile(.48);
 
 
 
-/* =====================================
-OBTURATION
-===================================== */
+/* OBTURATION */
 
-const obturationMaterial=
-new THREE.MeshStandardMaterial({
-color:0xf2c879
-});
+function createFilling(x){
 
+const filling=
+new THREE.Mesh(
 
-function createObturation(x){
-
-const geometry=
 new THREE.CylinderGeometry(
 .055,
 .035,
 1.8,
 16
-);
+),
 
-const filling=
-new THREE.Mesh(
-geometry,
-obturationMaterial
+new THREE.MeshStandardMaterial({
+color:0xf2c879
+})
+
 );
 
 filling.position.set(
@@ -978,9 +987,7 @@ x,
 
 filling.visible=false;
 
-toothGroup.add(
-filling
-);
+toothGroup.add(filling);
 
 return filling;
 
@@ -988,10 +995,10 @@ return filling;
 
 
 const filling1=
-createObturation(-.48);
+createFilling(-.48);
 
 const filling2=
-createObturation(.48);
+createFilling(.48);
 
 
 
@@ -1016,23 +1023,14 @@ controls.minDistance=3;
 controls.maxDistance=8;
 
 
-
-/* =====================================
-STATE
-===================================== */
-
-let labelsVisible=false;
-
 let autoRotate=false;
 
 let ghostMode=false;
 
-let currentStep=1;
-
 
 
 /* =====================================
-EXTERNAL
+VIEWS
 ===================================== */
 
 window.externalView=function(){
@@ -1065,11 +1063,6 @@ filling2.visible=false;
 };
 
 
-
-/* =====================================
-SECTION
-===================================== */
-
 window.sectionView=function(){
 
 crown.visible=false;
@@ -1091,11 +1084,6 @@ canal3.visible=true;
 
 };
 
-
-
-/* =====================================
-PULP
-===================================== */
 
 window.pulpView=function(){
 
@@ -1126,7 +1114,8 @@ GHOST
 
 window.toggleGhost=function(){
 
-ghostMode=!ghostMode;
+ghostMode=
+!ghostMode;
 
 if(ghostMode){
 
@@ -1163,19 +1152,8 @@ AUTO ROTATE
 
 window.toggleAutoRotate=function(){
 
-autoRotate=!autoRotate;
-
-};
-
-
-
-/* =====================================
-LABELS
-===================================== */
-
-window.toggleLabels=function(){
-
-labelsVisible=!labelsVisible;
+autoRotate=
+!autoRotate;
 
 };
 
@@ -1207,205 +1185,489 @@ toothGroup.rotation.set(
 0
 );
 
-accessCavity.visible=false;
-
-file1.visible=false;
-file2.visible=false;
-
-filling1.visible=false;
-filling2.visible=false;
-
 externalView();
 
-currentStep=1;
-
-updateRCT();
-
 };
 
 
 
 /* =====================================
-RCT STEP DATA
+CHALLENGE DATA
 ===================================== */
 
-const rctData={
+const questions=[
 
-1:{
-title:"Step 1 — Access Cavity",
-description:
-"Access preparation provides entry to the pulp chamber and should allow clear identification of the canal orifices."
+{
+question:
+"What is the primary purpose of an access cavity?",
+
+options:[
+"To provide access to the pulp chamber and canal orifices",
+"To permanently fill the root canal",
+"To measure blood pressure",
+"To remove the periodontal ligament"
+],
+
+answer:0,
+
+explanation:
+"Access preparation provides entry to the pulp chamber and facilitates identification of the canal orifices."
 },
 
-2:{
-title:"Step 2 — Locate Canal Orifices",
-description:
-"Identify the canal orifices on the pulpal floor and understand their relationship to the chamber anatomy."
+
+{
+question:
+"Which step normally follows access preparation?",
+
+options:[
+"Obturation",
+"Identification of canal orifices",
+"Final restoration only",
+"Extraction"
+],
+
+answer:1,
+
+explanation:
+"After gaining access, the clinician identifies the pulp chamber and canal orifices."
 },
 
-3:{
-title:"Step 3 — Working Length",
-description:
-"Working length is established using appropriate clinical methods and should be verified before canal preparation."
+
+{
+question:
+"Working length is established primarily to determine:",
+
+options:[
+"The patient's age",
+"The appropriate extent of canal instrumentation",
+"The tooth colour",
+"The crown shade"
+],
+
+answer:1,
+
+explanation:
+"Working length helps determine the intended extent of instrumentation and cleaning within the canal."
 },
 
-4:{
-title:"Step 4 — Cleaning & Shaping",
-description:
-"Cleaning and shaping aims to prepare the canal system while maintaining the original anatomy as far as practical."
+
+{
+question:
+"What is the general goal of cleaning and shaping?",
+
+options:[
+"To prepare the canal system while maintaining its anatomy as far as practical",
+"To remove the entire tooth",
+"To change the patient's bite permanently",
+"To whiten the crown"
+],
+
+answer:0,
+
+explanation:
+"Cleaning and shaping aims to prepare the canal system for disinfection and filling while respecting the canal anatomy."
 },
 
-5:{
-title:"Step 5 — Obturation",
-description:
-"Obturation fills the prepared canal system using an appropriate filling technique and material."
+
+{
+question:
+"Obturation refers to:",
+
+options:[
+"Filling the prepared root canal system",
+"Opening the mouth",
+"Taking a medical history",
+"Selecting a tooth shade"
+],
+
+answer:0,
+
+explanation:
+"Obturation is the filling of the prepared root canal system after appropriate cleaning and shaping."
 }
 
+];
+
+
+
+/* =====================================
+GAME STATE
+===================================== */
+
+let currentQuestion=0;
+
+let score=0;
+
+let streak=0;
+
+let answered=false;
+
+
+
+/* =====================================
+START
+===================================== */
+
+window.startChallenge=function(){
+
+currentQuestion=0;
+
+score=0;
+
+streak=0;
+
+answered=false;
+
+
+document.getElementById(
+"startScreen"
+).style.display="none";
+
+
+document.getElementById(
+"resultScreen"
+).style.display="none";
+
+
+document.getElementById(
+"gameScreen"
+).style.display="block";
+
+
+loadQuestion();
+
 };
 
 
 
 /* =====================================
-SELECT RCT STEP
+LOAD QUESTION
 ===================================== */
 
-window.selectRCTStep=
-function(step){
+function loadQuestion(){
 
-currentStep=step;
+answered=false;
 
-updateRCT();
-
-};
-
-
-/* =====================================
-UPDATE RCT
-===================================== */
-
-function updateRCT(){
-
-for(let i=1;i<=5;i++){
-
-const element=
-document.getElementById(
-"step"+i
-);
-
-element.classList.remove(
-"active"
-);
-
-}
-
-document.getElementById(
-"step"+currentStep
-).classList.add(
-"active"
-);
+const q=
+questions[currentQuestion];
 
 
 document.getElementById(
-"rctTitle"
+"questionNumber"
 ).innerText=
-rctData[currentStep].title;
+currentQuestion+1;
 
 
 document.getElementById(
-"rctDescription"
+"score"
 ).innerText=
-rctData[currentStep].description;
+score;
 
 
 document.getElementById(
-"progressBar"
-).style.width=
-((currentStep-1)/4*100)+"%";
+"streak"
+).innerText=
+streak;
 
 
 document.getElementById(
 "progressText"
 ).innerText=
-"RCT Progress: "+
-currentStep+
-" / 5";
+"Question "+
+(currentQuestion+1)+
+" of "+
+questions.length;
 
 
-/* VISUAL STEP */
+document.getElementById(
+"progressBar"
+).style.width=
+(
+currentQuestion/
+questions.length*
+100
+)+"%";
 
-externalView();
+
+document.getElementById(
+"question"
+).innerText=
+q.question;
 
 
-if(currentStep===1){
+const options=
+document.getElementById(
+"options"
+);
 
-accessCavity.visible=true;
+options.innerHTML="";
 
-crown.visible=true;
 
-}
+q.options.forEach(
+function(option,index){
 
-if(currentStep===2){
+const button=
+document.createElement(
+"button"
+);
 
-sectionView();
+button.className=
+"option";
 
-accessCavity.visible=true;
+button.innerText=
+option;
 
-}
+button.onclick=
+function(){
 
-if(currentStep===3){
+answerQuestion(
+index,
+button
+);
 
-sectionView();
+};
 
-accessCavity.visible=true;
+options.appendChild(
+button
+);
 
-file1.visible=true;
-file2.visible=true;
+});
 
-}
 
-if(currentStep===4){
+document.getElementById(
+"feedback"
+).style.display=
+"none";
 
-sectionView();
 
-accessCavity.visible=true;
-
-canal1.visible=true;
-canal2.visible=true;
-canal3.visible=true;
-
-}
-
-if(currentStep===5){
-
-sectionView();
-
-accessCavity.visible=true;
-
-canal1.visible=false;
-canal2.visible=false;
-canal3.visible=false;
-
-filling1.visible=true;
-filling2.visible=true;
-
-}
+document.getElementById(
+"nextButton"
+).style.display=
+"none";
 
 }
 
 
 
 /* =====================================
-TOOTH SELECTOR
+ANSWER
 ===================================== */
 
-window.changeTooth=function(){
+function answerQuestion(
+selected,
+button
+){
 
-const selected=
+if(answered)
+return;
+
+answered=true;
+
+
+const q=
+questions[currentQuestion];
+
+const optionButtons=
+document.querySelectorAll(
+".option"
+);
+
+
+optionButtons.forEach(
+function(btn){
+
+btn.disabled=true;
+
+});
+
+
+if(selected===q.answer){
+
+score+=10;
+
+streak++;
+
+button.classList.add(
+"correct"
+);
+
 document.getElementById(
-"toothSelect"
-).value;
+"feedbackTitle"
+).innerText=
+"✅ Correct!";
 
-resetView();
+
+document.getElementById(
+"feedbackTitle"
+).style.color=
+"#5ee7f2";
+
+}
+else{
+
+streak=0;
+
+button.classList.add(
+"wrong"
+);
+
+optionButtons[
+q.answer
+].classList.add(
+"correct"
+);
+
+document.getElementById(
+"feedbackTitle"
+).innerText=
+"❌ Not quite";
+
+
+document.getElementById(
+"feedbackTitle"
+).style.color=
+"#ff8f8f";
+
+}
+
+
+document.getElementById(
+"feedbackText"
+).innerText=
+q.explanation;
+
+
+document.getElementById(
+"feedback"
+).style.display=
+"block";
+
+
+document.getElementById(
+"score"
+).innerText=
+score;
+
+
+document.getElementById(
+"streak"
+).innerText=
+streak;
+
+
+document.getElementById(
+"nextButton"
+).style.display=
+"inline-block";
+
+}
+
+
+
+/* =====================================
+NEXT
+===================================== */
+
+window.nextQuestion=function(){
+
+if(currentQuestion<
+questions.length-1){
+
+currentQuestion++;
+
+loadQuestion();
+
+}
+else{
+
+showResult();
+
+}
+
+};
+
+
+
+/* =====================================
+RESULT
+===================================== */
+
+function showResult(){
+
+document.getElementById(
+"gameScreen"
+).style.display=
+"none";
+
+
+document.getElementById(
+"resultScreen"
+).style.display=
+"block";
+
+
+document.getElementById(
+"finalScore"
+).innerText=
+score+
+" / "+
+(questions.length*10);
+
+
+let message="";
+
+if(score===50){
+
+message=
+"🎉 All questions answered correctly. Great work!";
+
+}
+else if(score>=30){
+
+message=
+"👏 Good attempt. Review the explanations and try again.";
+
+}
+else{
+
+message=
+"📚 Keep practicing. Revisit the RCT steps and try the challenge again.";
+
+}
+
+
+document.getElementById(
+"resultMessage"
+).innerText=
+message;
+
+}
+
+
+
+/* =====================================
+RESTART
+===================================== */
+
+window.restartChallenge=function(){
+
+document.getElementById(
+"resultScreen"
+).style.display=
+"none";
+
+document.getElementById(
+"gameScreen"
+).style.display=
+"block";
+
+currentQuestion=0;
+
+score=0;
+
+streak=0;
+
+loadQuestion();
 
 };
 
@@ -1466,10 +1728,8 @@ animate();
 
 externalView();
 
-updateRCT();
-
 </script>
 
 </body>
 
-      </html>
+</html>
