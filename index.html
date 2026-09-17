@@ -33,15 +33,11 @@ body {
 }
 
 body {
-  margin: 0;
   background: #06111f;
   color: white;
   font-family: Arial, sans-serif;
   text-align: center;
 }
-
-
-/* HEADER */
 
 header {
   padding: 20px;
@@ -100,7 +96,7 @@ select {
 }
 
 
-/* BUTTONS */
+/* CONTROLS */
 
 .controls {
   padding: 10px;
@@ -115,6 +111,7 @@ button {
   color: white;
   font-weight: bold;
   font-size: 14px;
+  cursor: pointer;
 }
 
 button:active {
@@ -132,7 +129,6 @@ button:active {
   background: #102a43;
   border-radius: 18px;
   text-align: left;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.25);
 }
 
 .info-card h2 {
@@ -146,10 +142,6 @@ button:active {
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.info-row:last-child {
-  border-bottom: none;
-}
-
 .info-title {
   color: #8cebf2;
   font-weight: bold;
@@ -161,7 +153,7 @@ button:active {
 }
 
 
-/* LEARNING BOX */
+/* LEARNING MESSAGE */
 
 .learning {
   width: 92%;
@@ -181,6 +173,36 @@ button:active {
   line-height: 1.5;
 }
 
+
+/* POPUP */
+
+#structurePopup {
+  display: none;
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: 88%;
+  max-width: 420px;
+  padding: 16px;
+  background: #102a43;
+  border: 1px solid #19b8ca;
+  border-radius: 16px;
+  z-index: 20;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+#structurePopup h3 {
+  margin: 0 0 8px;
+  color: #5ee7f2;
+}
+
+#structurePopup p {
+  margin: 0;
+  color: #d5e5ed;
+  line-height: 1.5;
+}
+
 </style>
 
 </head>
@@ -189,20 +211,16 @@ button:active {
 <body>
 
 
-<!-- HEADER -->
-
 <header>
 
 <h1>🦷 DentalBuddy 3D</h1>
 
 <p>
-Interactive Dental Anatomy Explorer
+Realistic Dental Anatomy Explorer
 </p>
 
 </header>
 
-
-<!-- TOOTH SELECTOR -->
 
 <div class="selector">
 
@@ -266,12 +284,8 @@ Select a tooth
 </div>
 
 
-<!-- 3D VIEWER -->
-
 <div id="viewer"></div>
 
-
-<!-- CONTROLS -->
 
 <div class="controls">
 
@@ -293,6 +307,10 @@ Pulp
 🏷 Labels
 </button>
 
+<button onclick="toggleGhost()">
+👁 Ghost
+</button>
+
 <button onclick="toggleAutoRotate()">
 🔄 Auto Rotate
 </button>
@@ -304,14 +322,11 @@ Pulp
 </div>
 
 
-<!-- TOOTH INFORMATION -->
-
 <div class="info-card">
 
 <h2 id="toothName">
 Tooth 46
 </h2>
-
 
 <div class="info-row">
 
@@ -363,27 +378,38 @@ Clinical Learning Point
 
 <div class="info-text"
      id="clinicalInfo">
-Always evaluate the pulp chamber floor and canal orifices carefully during access.
+Inspect the pulpal floor carefully during access.
 </div>
 
 </div>
 
 </div>
 
-
-<!-- LEARNING BOX -->
 
 <div class="learning">
 
 <h3>
-🎓 DentalBuddy Learning Mode
+🎓 Learn the Anatomy
 </h3>
 
 <p id="learningText">
 
-Rotate the tooth and explore its external anatomy.
-Then select Section or Pulp to study the internal structures.
+Rotate the tooth and explore the crown, roots and internal anatomy.
+Tap a structure to learn more.
 
+</p>
+
+</div>
+
+
+<div id="structurePopup">
+
+<h3 id="popupTitle">
+Dental Anatomy
+</h3>
+
+<p id="popupText">
+Explore the selected structure.
 </p>
 
 </div>
@@ -393,9 +419,9 @@ Then select Section or Pulp to study the internal structures.
 <script type="module">
 
 
-/* ==========================================
+/* =====================================
    THREE.JS
-========================================== */
+===================================== */
 
 import * as THREE from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
@@ -405,18 +431,12 @@ import { OrbitControls } from
 
 
 
-/* ==========================================
-   CONTAINER
-========================================== */
+/* =====================================
+   BASIC SETUP
+===================================== */
 
 const container =
 document.getElementById("viewer");
-
-
-
-/* ==========================================
-   SCENE
-========================================== */
 
 const scene =
 new THREE.Scene();
@@ -424,11 +444,6 @@ new THREE.Scene();
 scene.background =
 new THREE.Color(0x06111f);
 
-
-
-/* ==========================================
-   CAMERA
-========================================== */
 
 const camera =
 new THREE.PerspectiveCamera(
@@ -445,11 +460,6 @@ camera.position.set(
 5
 );
 
-
-
-/* ==========================================
-   RENDERER
-========================================== */
 
 const renderer =
 new THREE.WebGLRenderer({
@@ -473,18 +483,15 @@ renderer.domElement
 
 
 
-/* ==========================================
-   LIGHTS
-========================================== */
+/* =====================================
+   LIGHTING
+===================================== */
 
-const ambientLight =
+scene.add(
 new THREE.AmbientLight(
 0xffffff,
 2
-);
-
-scene.add(
-ambientLight
+)
 );
 
 
@@ -523,9 +530,9 @@ fillLight
 
 
 
-/* ==========================================
+/* =====================================
    TOOTH GROUP
-========================================== */
+===================================== */
 
 const toothGroup =
 new THREE.Group();
@@ -536,9 +543,9 @@ toothGroup
 
 
 
-/* ==========================================
-   CROWN / ENAMEL
-========================================== */
+/* =====================================
+   CROWN
+===================================== */
 
 const crownGeometry =
 new THREE.SphereGeometry(
@@ -561,12 +568,12 @@ enamelMaterial
 
 crown.scale.set(
 1,
-1.15,
-0.9
+1.05,
+0.92
 );
 
 crown.position.y =
-0.7;
+0.65;
 
 toothGroup.add(
 crown
@@ -574,9 +581,121 @@ crown
 
 
 
-/* ==========================================
+/* =====================================
+   CUSPS
+===================================== */
+
+const cuspMaterial =
+new THREE.MeshStandardMaterial({
+color: 0xf7f3df,
+roughness: 0.25
+});
+
+
+function createCusp(
+x,
+z
+) {
+
+const geometry =
+new THREE.SphereGeometry(
+0.38,
+32,
+32
+);
+
+const cusp =
+new THREE.Mesh(
+geometry,
+cuspMaterial
+);
+
+cusp.scale.set(
+1,
+0.65,
+1
+);
+
+cusp.position.set(
+x,
+1.35,
+z
+);
+
+toothGroup.add(
+cusp
+);
+
+return cusp;
+
+}
+
+
+const cusp1 =
+createCusp(
+-0.55,
+-0.4
+);
+
+const cusp2 =
+createCusp(
+0.55,
+-0.4
+);
+
+const cusp3 =
+createCusp(
+-0.55,
+0.4
+);
+
+const cusp4 =
+createCusp(
+0.55,
+0.4
+);
+
+
+
+/* =====================================
+   CENTRAL GROOVE
+===================================== */
+
+const grooveMaterial =
+new THREE.MeshStandardMaterial({
+color: 0x9d927a,
+roughness: 0.7
+});
+
+
+const grooveGeometry =
+new THREE.BoxGeometry(
+0.12,
+0.035,
+1.1
+);
+
+const centralGroove =
+new THREE.Mesh(
+grooveGeometry,
+grooveMaterial
+);
+
+centralGroove.position.set(
+0,
+1.37,
+0
+);
+
+toothGroup.add(
+centralGroove
+);
+
+
+
+/* =====================================
    DENTIN
-========================================== */
+===================================== */
 
 const dentinGeometry =
 new THREE.SphereGeometry(
@@ -599,12 +718,12 @@ dentinMaterial
 
 dentin.scale.set(
 1,
-1.2,
+1.15,
 0.9
 );
 
 dentin.position.y =
-0.7;
+0.65;
 
 dentin.visible =
 false;
@@ -615,9 +734,9 @@ dentin
 
 
 
-/* ==========================================
-   ROOT GROUP
-========================================== */
+/* =====================================
+   ROOTS
+===================================== */
 
 const rootGroup =
 new THREE.Group();
@@ -634,15 +753,15 @@ rotation
 
 const geometry =
 new THREE.ConeGeometry(
-0.28,
-2.2,
+0.30,
+2.35,
 48
 );
 
 const material =
 new THREE.MeshStandardMaterial({
 color: 0xe5dfc9,
-roughness: 0.4
+roughness: 0.42
 });
 
 const root =
@@ -653,7 +772,7 @@ material
 
 root.position.set(
 x,
--1,
+-1.0,
 0
 );
 
@@ -664,29 +783,28 @@ rootGroup.add(
 root
 );
 
+return root;
+
 }
 
 
+const root1 =
 createRoot(
--0.55,
--0.12
+-0.52,
+-0.14
 );
 
+const root2 =
 createRoot(
-0,
-0
-);
-
-createRoot(
-0.55,
-0.12
+0.52,
+0.14
 );
 
 
 
-/* ==========================================
+/* =====================================
    PULP
-========================================== */
+===================================== */
 
 const pulpGeometry =
 new THREE.SphereGeometry(
@@ -699,7 +817,7 @@ const pulpMaterial =
 new THREE.MeshStandardMaterial({
 color: 0xd94b4b,
 transparent: true,
-opacity: 0.9
+opacity: 0.92
 });
 
 const pulp =
@@ -709,13 +827,16 @@ pulpMaterial
 );
 
 pulp.scale.set(
-0.7,
-1.5,
+0.75,
+1.55,
 0.7
 );
 
 pulp.position.y =
-0.5;
+0.45;
+
+pulp.visible =
+true;
 
 toothGroup.add(
 pulp
@@ -723,9 +844,9 @@ pulp
 
 
 
-/* ==========================================
+/* =====================================
    CANALS
-========================================== */
+===================================== */
 
 const canalMaterial =
 new THREE.MeshStandardMaterial({
@@ -733,13 +854,16 @@ color: 0xe45b5b
 });
 
 
-function createCanal(x) {
+function createCanal(
+x,
+z
+) {
 
 const geometry =
 new THREE.CylinderGeometry(
-0.07,
-0.04,
-1.8,
+0.065,
+0.035,
+1.9,
 20
 );
 
@@ -752,7 +876,7 @@ canalMaterial
 canal.position.set(
 x,
 -0.65,
-0
+z
 );
 
 canal.visible =
@@ -768,28 +892,35 @@ return canal;
 
 
 const canal1 =
-createCanal(-0.55);
+createCanal(
+-0.48,
+-0.12
+);
 
 const canal2 =
-createCanal(0);
+createCanal(
+-0.48,
+0.12
+);
 
 const canal3 =
-createCanal(0.55);
+createCanal(
+0.48,
+0
+);
 
 
 
-/* ==========================================
+/* =====================================
    LABELS
-========================================== */
+===================================== */
 
 const labels = [];
 
 
 function createLabel(
 text,
-x,
-y,
-z
+position
 ) {
 
 const canvas =
@@ -806,13 +937,6 @@ canvas.height =
 const ctx =
 canvas.getContext(
 "2d"
-);
-
-ctx.clearRect(
-0,
-0,
-512,
-128
 );
 
 ctx.fillStyle =
@@ -845,15 +969,13 @@ new THREE.Sprite(
 material
 );
 
-sprite.position.set(
-x,
-y,
-z
+sprite.position.copy(
+position
 );
 
 sprite.scale.set(
-1.4,
-0.35,
+1.35,
+0.34,
 1
 );
 
@@ -873,37 +995,45 @@ sprite
 
 createLabel(
 "Enamel",
-1.5,
-1.2,
+new THREE.Vector3(
+1.45,
+1.25,
 0
+)
 );
 
 createLabel(
 "Dentin",
-1.5,
-0.35,
+new THREE.Vector3(
+1.45,
+0.4,
 0
+)
 );
 
 createLabel(
 "Pulp",
-1.3,
-0.1,
+new THREE.Vector3(
+1.25,
+0,
 0
+)
 );
 
 createLabel(
 "Root Canal",
-1.5,
--1.1,
+new THREE.Vector3(
+1.45,
+-1.15,
 0
+)
 );
 
 
 
-/* ==========================================
-   ORBIT CONTROLS
-========================================== */
+/* =====================================
+   CONTROLS
+===================================== */
 
 const controls =
 new OrbitControls(
@@ -928,9 +1058,9 @@ controls.maxDistance =
 
 
 
-/* ==========================================
+/* =====================================
    STATE
-========================================== */
+===================================== */
 
 let labelsVisible =
 false;
@@ -938,11 +1068,14 @@ false;
 let autoRotate =
 false;
 
+let ghostMode =
+false;
 
 
-/* ==========================================
+
+/* =====================================
    EXTERNAL VIEW
-========================================== */
+===================================== */
 
 window.externalView =
 function() {
@@ -950,11 +1083,29 @@ function() {
 crown.visible =
 true;
 
+cusp1.visible =
+true;
+
+cusp2.visible =
+true;
+
+cusp3.visible =
+true;
+
+cusp4.visible =
+true;
+
+centralGroove.visible =
+true;
+
 dentin.visible =
 false;
 
-pulp.visible =
+rootGroup.visible =
 true;
+
+pulp.visible =
+false;
 
 canal1.visible =
 false;
@@ -965,18 +1116,13 @@ false;
 canal3.visible =
 false;
 
-document.getElementById(
-"learningText"
-).innerText =
-"Rotate the tooth to explore its external anatomy.";
-
 };
 
 
 
-/* ==========================================
+/* =====================================
    SECTION VIEW
-========================================== */
+===================================== */
 
 window.sectionView =
 function() {
@@ -984,7 +1130,25 @@ function() {
 crown.visible =
 false;
 
+cusp1.visible =
+false;
+
+cusp2.visible =
+false;
+
+cusp3.visible =
+false;
+
+cusp4.visible =
+false;
+
+centralGroove.visible =
+false;
+
 dentin.visible =
+true;
+
+rootGroup.visible =
 true;
 
 pulp.visible =
@@ -999,18 +1163,13 @@ true;
 canal3.visible =
 true;
 
-document.getElementById(
-"learningText"
-).innerText =
-"Section view reveals the internal structures: enamel, dentin, pulp chamber and root canals.";
-
 };
 
 
 
-/* ==========================================
+/* =====================================
    PULP VIEW
-========================================== */
+===================================== */
 
 window.pulpView =
 function() {
@@ -1018,7 +1177,25 @@ function() {
 crown.visible =
 false;
 
+cusp1.visible =
+false;
+
+cusp2.visible =
+false;
+
+cusp3.visible =
+false;
+
+cusp4.visible =
+false;
+
+centralGroove.visible =
+false;
+
 dentin.visible =
+false;
+
+rootGroup.visible =
 false;
 
 pulp.visible =
@@ -1033,18 +1210,13 @@ true;
 canal3.visible =
 true;
 
-document.getElementById(
-"learningText"
-).innerText =
-"Pulp view focuses on the pulp chamber and root canal system.";
-
 };
 
 
 
-/* ==========================================
+/* =====================================
    LABELS
-========================================== */
+===================================== */
 
 window.toggleLabels =
 function() {
@@ -1064,9 +1236,59 @@ labelsVisible;
 
 
 
-/* ==========================================
+/* =====================================
+   GHOST MODE
+===================================== */
+
+window.toggleGhost =
+function() {
+
+ghostMode =
+!ghostMode;
+
+if (ghostMode) {
+
+crown.material.transparent =
+true;
+
+crown.material.opacity =
+0.28;
+
+dentin.visible =
+true;
+
+pulp.visible =
+true;
+
+canal1.visible =
+true;
+
+canal2.visible =
+true;
+
+canal3.visible =
+true;
+
+}
+else {
+
+crown.material.transparent =
+false;
+
+crown.material.opacity =
+1;
+
+externalView();
+
+}
+
+};
+
+
+
+/* =====================================
    AUTO ROTATE
-========================================== */
+===================================== */
 
 window.toggleAutoRotate =
 function() {
@@ -1078,9 +1300,9 @@ autoRotate =
 
 
 
-/* ==========================================
+/* =====================================
    RESET
-========================================== */
+===================================== */
 
 window.resetView =
 function() {
@@ -1105,121 +1327,134 @@ toothGroup.rotation.set(
 0
 );
 
+if (ghostMode) {
+
+ghostMode =
+false;
+
+crown.material.transparent =
+false;
+
+crown.material.opacity =
+1;
+
+}
+
 externalView();
 
 };
 
 
 
-/* ==========================================
+/* =====================================
    TOOTH DATABASE
-========================================== */
+===================================== */
 
 const toothData = {
 
 "46": {
-name: "Tooth 46",
-type: "Mandibular First Molar",
-roots: "Two roots — mesial and distal",
-canals: "Usually 3–4 canals. Mesial root commonly has MB and ML canals.",
-clinical: "Carefully inspect the pulpal floor and canal orifices during access."
+name:"Tooth 46",
+type:"Mandibular First Molar",
+roots:"Two roots — mesial and distal",
+canals:"Usually 3–4 canals.",
+clinical:"Study the mesial canal system carefully and look for MB and ML canal anatomy."
 },
 
 "36": {
-name: "Tooth 36",
-type: "Mandibular First Molar",
-roots: "Two roots — mesial and distal",
-canals: "Usually 3–4 canals.",
-clinical: "Look carefully for separate mesial canal orifices."
+name:"Tooth 36",
+type:"Mandibular First Molar",
+roots:"Two roots — mesial and distal",
+canals:"Usually 3–4 canals.",
+clinical:"Evaluate the pulpal floor for separate mesial canal orifices."
 },
 
 "16": {
-name: "Tooth 16",
-type: "Maxillary First Molar",
-roots: "Three roots — mesiobuccal, distobuccal and palatal",
-canals: "Usually 3–4 canals. MB2 may be present.",
-clinical: "Search carefully for the MB2 canal."
+name:"Tooth 16",
+type:"Maxillary First Molar",
+roots:"Three roots — mesiobuccal, distobuccal and palatal",
+canals:"Usually 3–4 canals.",
+clinical:"MB2 identification is an important endodontic consideration."
 },
 
 "26": {
-name: "Tooth 26",
-type: "Maxillary First Molar",
-roots: "Three roots — mesiobuccal, distobuccal and palatal",
-canals: "Usually 3–4 canals.",
-clinical: "MB2 identification is an important endodontic consideration."
+name:"Tooth 26",
+type:"Maxillary First Molar",
+roots:"Three roots — mesiobuccal, distobuccal and palatal",
+canals:"Usually 3–4 canals.",
+clinical:"Carefully inspect the MB root for additional canal anatomy."
 },
 
 "11": {
-name: "Tooth 11",
-type: "Maxillary Central Incisor",
-roots: "Usually one root",
-canals: "Usually one canal",
-clinical: "Understand the palatal anatomy and access orientation."
+name:"Tooth 11",
+type:"Maxillary Central Incisor",
+roots:"Usually one root",
+canals:"Usually one canal.",
+clinical:"Understand the relationship between crown anatomy and pulp chamber."
 },
 
 "21": {
-name: "Tooth 21",
-type: "Maxillary Central Incisor",
-roots: "Usually one root",
-canals: "Usually one canal",
-clinical: "Study the relationship between crown anatomy and pulp chamber."
+name:"Tooth 21",
+type:"Maxillary Central Incisor",
+roots:"Usually one root",
+canals:"Usually one canal.",
+clinical:"Study the palatal access orientation."
 },
 
 "31": {
-name: "Tooth 31",
-type: "Mandibular Central Incisor",
-roots: "Usually one root",
-canals: "Usually one canal, but two canals may occur.",
-clinical: "Consider the possibility of a second canal."
+name:"Tooth 31",
+type:"Mandibular Central Incisor",
+roots:"Usually one root",
+canals:"Usually one canal, with possible two-canal anatomy.",
+clinical:"Consider the possibility of a second canal."
 },
 
 "41": {
-name: "Tooth 41",
-type: "Mandibular Central Incisor",
-roots: "Usually one root",
-canals: "Usually one canal, with possible two-canal anatomy.",
-clinical: "Evaluate the lingual aspect carefully."
+name:"Tooth 41",
+type:"Mandibular Central Incisor",
+roots:"Usually one root",
+canals:"Usually one canal, with possible two-canal anatomy.",
+clinical:"Evaluate the lingual aspect carefully."
 },
 
 "13": {
-name: "Tooth 13",
-type: "Maxillary Canine",
-roots: "Usually one long root",
-canals: "Usually one canal",
-clinical: "The long root requires careful working-length assessment."
+name:"Tooth 13",
+type:"Maxillary Canine",
+roots:"Usually one long root",
+canals:"Usually one canal.",
+clinical:"The long root requires careful working-length assessment."
 },
 
 "23": {
-name: "Tooth 23",
-type: "Maxillary Canine",
-roots: "Usually one long root",
-canals: "Usually one canal",
-clinical: "Study the long root and canal orientation."
+name:"Tooth 23",
+type:"Maxillary Canine",
+roots:"Usually one long root",
+canals:"Usually one canal.",
+clinical:"Study the long root and canal orientation."
 },
 
 "33": {
-name: "Tooth 33",
-type: "Mandibular Canine",
-roots: "Usually one root",
-canals: "Usually one canal, occasionally two.",
-clinical: "Look for possible additional canal anatomy."
+name:"Tooth 33",
+type:"Mandibular Canine",
+roots:"Usually one root",
+canals:"Usually one canal, occasionally two.",
+clinical:"Look for possible additional canal anatomy."
 },
 
 "43": {
-name: "Tooth 43",
-type: "Mandibular Canine",
-roots: "Usually one root",
-canals: "Usually one canal, occasionally two.",
-clinical: "Understand possible variation in canal anatomy."
+name:"Tooth 43",
+type:"Mandibular Canine",
+roots:"Usually one root",
+canals:"Usually one canal, occasionally two.",
+clinical:"Understand possible variation in canal anatomy."
 }
 
 };
 
 
 
-/* ==========================================
+/* =====================================
    CHANGE TOOTH
-========================================== */
+===================================== */
 
 window.changeTooth =
 function() {
@@ -1240,24 +1475,20 @@ document.getElementById(
 ).innerText =
 data.name;
 
-
 document.getElementById(
 "toothType"
 ).innerText =
 data.type;
-
 
 document.getElementById(
 "rootInfo"
 ).innerText =
 data.roots;
 
-
 document.getElementById(
 "canalInfo"
 ).innerText =
 data.canals;
-
 
 document.getElementById(
 "clinicalInfo"
@@ -1271,9 +1502,149 @@ resetView();
 
 
 
-/* ==========================================
+/* =====================================
+   CLICKABLE ANATOMY
+===================================== */
+
+const raycaster =
+new THREE.Raycaster();
+
+const mouse =
+new THREE.Vector2();
+
+
+renderer.domElement.addEventListener(
+"click",
+function(event) {
+
+const rect =
+renderer.domElement.getBoundingClientRect();
+
+mouse.x =
+((event.clientX - rect.left) /
+rect.width) * 2 - 1;
+
+mouse.y =
+-((event.clientY - rect.top) /
+rect.height) * 2 + 1;
+
+
+raycaster.setFromCamera(
+mouse,
+camera
+);
+
+
+const objects = [
+crown,
+dentin,
+pulp,
+canal1,
+canal2,
+canal3
+];
+
+
+const hits =
+raycaster.intersectObjects(
+objects
+);
+
+
+if (!hits.length)
+return;
+
+
+const object =
+hits[0].object;
+
+
+let title =
+"Tooth Anatomy";
+
+let text =
+"Explore this structure.";
+
+if (object === crown) {
+
+title =
+"Enamel";
+
+text =
+"Enamel is the highly mineralized outer covering of the crown.";
+
+}
+
+else if (object === dentin) {
+
+title =
+"Dentin";
+
+text =
+"Dentin forms the main bulk of the tooth and lies beneath enamel.";
+
+}
+
+else if (object === pulp) {
+
+title =
+"Pulp";
+
+text =
+"The dental pulp contains the neurovascular tissue of the tooth.";
+
+}
+
+else if (
+object === canal1 ||
+object === canal2 ||
+object === canal3
+) {
+
+title =
+"Root Canal";
+
+text =
+"Root canals contain pulpal tissue and are evaluated during endodontic treatment.";
+
+}
+
+
+document.getElementById(
+"popupTitle"
+).innerText =
+title;
+
+document.getElementById(
+"popupText"
+).innerText =
+text;
+
+document.getElementById(
+"structurePopup"
+).style.display =
+"block";
+
+
+setTimeout(
+function() {
+
+document.getElementById(
+"structurePopup"
+).style.display =
+"none";
+
+},
+4500
+);
+
+});
+
+
+
+/* =====================================
    RESIZE
-========================================== */
+===================================== */
 
 window.addEventListener(
 "resize",
@@ -1294,9 +1665,9 @@ container.clientHeight
 
 
 
-/* ==========================================
+/* =====================================
    ANIMATION
-========================================== */
+===================================== */
 
 function animate() {
 
@@ -1324,6 +1695,11 @@ camera
 
 
 animate();
+
+
+/* INITIAL VIEW */
+
+externalView();
 
 </script>
 
