@@ -74,13 +74,22 @@ button{
 <button onclick="resetView()">Reset View</button>
 </div>
 
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
+  }
+}
+</script>
+
 <script type="module">
 
 import * as THREE from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
 
-import {OrbitControls} from
+import { OrbitControls } from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
+
 
 const container =
 document.getElementById("viewer");
