@@ -5,15 +5,11 @@
 
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>DentalBuddy 3D</title>
 
-
-<!-- THREE.JS IMPORT MAP -->
 <script type="importmap">
 {
   "imports": {
@@ -21,7 +17,6 @@
   }
 }
 </script>
-
 
 <style>
 
@@ -38,6 +33,7 @@ body {
 }
 
 body {
+  margin: 0;
   background: #06111f;
   color: white;
   font-family: Arial, sans-serif;
@@ -62,38 +58,63 @@ h1 {
 }
 
 header p {
-  color: #d5e5ed;
   margin-bottom: 0;
+  color: #d5e5ed;
 }
 
 
-/* 3D VIEWER */
+/* TOOTH SELECTOR */
+
+.selector {
+  padding: 14px 12px 5px;
+}
+
+.selector label {
+  display: block;
+  margin-bottom: 7px;
+  color: #b7c7d5;
+  font-size: 14px;
+}
+
+select {
+  width: 90%;
+  max-width: 350px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: white;
+  color: #102a43;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+/* VIEWER */
 
 #viewer {
   width: 100%;
-  height: 60vh;
-  min-height: 400px;
+  height: 55vh;
+  min-height: 380px;
   touch-action: none;
   overflow: hidden;
 }
 
 
-/* BUTTON AREA */
+/* BUTTONS */
 
 .controls {
-  padding: 12px 10px;
+  padding: 10px;
 }
 
 button {
-  padding: 11px 16px;
+  padding: 11px 15px;
+  margin: 4px;
   border: none;
   border-radius: 12px;
   background: #19b8ca;
   color: white;
   font-weight: bold;
-  margin: 4px;
   font-size: 14px;
-  cursor: pointer;
 }
 
 button:active {
@@ -101,26 +122,63 @@ button:active {
 }
 
 
-/* INFORMATION */
+/* INFO CARD */
 
-.info {
-  padding: 8px 20px 30px;
+.info-card {
+  margin: 10px auto 25px;
+  width: 92%;
+  max-width: 520px;
+  padding: 18px;
+  background: #102a43;
+  border-radius: 18px;
+  text-align: left;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.25);
 }
 
-.info h2 {
-  margin-bottom: 8px;
+.info-card h2 {
+  margin-top: 0;
+  color: #5ee7f2;
+  text-align: center;
 }
 
-.info p {
+.info-row {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-title {
+  color: #8cebf2;
+  font-weight: bold;
+}
+
+.info-text {
+  color: #d5e5ed;
+  line-height: 1.5;
+}
+
+
+/* LEARNING BOX */
+
+.learning {
+  width: 92%;
+  max-width: 520px;
+  margin: 0 auto 30px;
+  padding: 18px;
+  background: #0b1d30;
+  border-radius: 18px;
+}
+
+.learning h3 {
+  margin-top: 0;
+}
+
+.learning p {
   color: #b7c7d5;
-  line-height: 1.6;
-}
-
-
-/* LABELS */
-
-.tooth-label {
-  color: white;
+  line-height: 1.5;
 }
 
 </style>
@@ -138,10 +196,74 @@ button:active {
 <h1>🦷 DentalBuddy 3D</h1>
 
 <p>
-Interactive Tooth Explorer
+Interactive Dental Anatomy Explorer
 </p>
 
 </header>
+
+
+<!-- TOOTH SELECTOR -->
+
+<div class="selector">
+
+<label for="toothSelect">
+Select a tooth
+</label>
+
+<select id="toothSelect"
+        onchange="changeTooth()">
+
+<option value="46">
+46 — Mandibular First Molar
+</option>
+
+<option value="36">
+36 — Mandibular First Molar
+</option>
+
+<option value="16">
+16 — Maxillary First Molar
+</option>
+
+<option value="26">
+26 — Maxillary First Molar
+</option>
+
+<option value="11">
+11 — Maxillary Central Incisor
+</option>
+
+<option value="21">
+21 — Maxillary Central Incisor
+</option>
+
+<option value="31">
+31 — Mandibular Central Incisor
+</option>
+
+<option value="41">
+41 — Mandibular Central Incisor
+</option>
+
+<option value="13">
+13 — Maxillary Canine
+</option>
+
+<option value="23">
+23 — Maxillary Canine
+</option>
+
+<option value="33">
+33 — Mandibular Canine
+</option>
+
+<option value="43">
+43 — Mandibular Canine
+</option>
+
+</select>
+
+</div>
 
 
 <!-- 3D VIEWER -->
@@ -182,17 +304,86 @@ Pulp
 </div>
 
 
-<!-- INFORMATION -->
+<!-- TOOTH INFORMATION -->
 
-<div class="info">
+<div class="info-card">
 
-<h2>
-3D Tooth Explorer
+<h2 id="toothName">
+Tooth 46
 </h2>
 
-<p>
-👆 Drag to rotate<br>
-🤏 Pinch to zoom
+
+<div class="info-row">
+
+<div class="info-title">
+Tooth Type
+</div>
+
+<div class="info-text"
+     id="toothType">
+Mandibular First Molar
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-title">
+Typical Roots
+</div>
+
+<div class="info-text"
+     id="rootInfo">
+Two roots — mesial and distal
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-title">
+Typical Canal Anatomy
+</div>
+
+<div class="info-text"
+     id="canalInfo">
+Usually 3–4 canals. Mesial root commonly has MB and ML canals.
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-title">
+Clinical Learning Point
+</div>
+
+<div class="info-text"
+     id="clinicalInfo">
+Always evaluate the pulp chamber floor and canal orifices carefully during access.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- LEARNING BOX -->
+
+<div class="learning">
+
+<h3>
+🎓 DentalBuddy Learning Mode
+</h3>
+
+<p id="learningText">
+
+Rotate the tooth and explore its external anatomy.
+Then select Section or Pulp to study the internal structures.
+
 </p>
 
 </div>
@@ -202,31 +393,30 @@ Pulp
 <script type="module">
 
 
-/* =====================================
+/* ==========================================
    THREE.JS
-===================================== */
+========================================== */
 
 import * as THREE from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
-
 
 import { OrbitControls } from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
 
 
 
-/* =====================================
+/* ==========================================
    CONTAINER
-===================================== */
+========================================== */
 
 const container =
 document.getElementById("viewer");
 
 
 
-/* =====================================
+/* ==========================================
    SCENE
-===================================== */
+========================================== */
 
 const scene =
 new THREE.Scene();
@@ -236,174 +426,181 @@ new THREE.Color(0x06111f);
 
 
 
-/* =====================================
+/* ==========================================
    CAMERA
-===================================== */
+========================================== */
 
 const camera =
 new THREE.PerspectiveCamera(
-  45,
-  container.clientWidth /
-  container.clientHeight,
-  0.1,
-  100
+45,
+container.clientWidth /
+container.clientHeight,
+0.1,
+100
 );
 
 camera.position.set(
-  0,
-  1.2,
-  5
+0,
+1.2,
+5
 );
 
 
 
-/* =====================================
+/* ==========================================
    RENDERER
-===================================== */
+========================================== */
 
 const renderer =
 new THREE.WebGLRenderer({
-  antialias: true,
-  alpha: false
+antialias: true
 });
 
 renderer.setPixelRatio(
-  Math.min(
-    window.devicePixelRatio,
-    2
-  )
-);
+Math.min(
+window.devicePixelRatio,
+2
+));
 
 renderer.setSize(
-  container.clientWidth,
-  container.clientHeight
+container.clientWidth,
+container.clientHeight
 );
 
 container.appendChild(
-  renderer.domElement
+renderer.domElement
 );
 
 
 
-/* =====================================
-   LIGHTING
-===================================== */
+/* ==========================================
+   LIGHTS
+========================================== */
 
 const ambientLight =
 new THREE.AmbientLight(
-  0xffffff,
-  2
+0xffffff,
+2
 );
 
-scene.add(ambientLight);
+scene.add(
+ambientLight
+);
 
 
 const mainLight =
 new THREE.DirectionalLight(
-  0xffffff,
-  3
+0xffffff,
+3
 );
 
 mainLight.position.set(
-  3,
-  5,
-  4
+3,
+5,
+4
 );
 
-scene.add(mainLight);
+scene.add(
+mainLight
+);
 
 
 const fillLight =
 new THREE.DirectionalLight(
-  0xffffff,
-  1.5
+0xffffff,
+1.5
 );
 
 fillLight.position.set(
-  -3,
-  2,
-  4
+-3,
+2,
+4
 );
 
-scene.add(fillLight);
+scene.add(
+fillLight
+);
 
 
 
-/* =====================================
-   MAIN TOOTH GROUP
-===================================== */
+/* ==========================================
+   TOOTH GROUP
+========================================== */
 
 const toothGroup =
 new THREE.Group();
 
-scene.add(toothGroup);
+scene.add(
+toothGroup
+);
 
 
 
-/* =====================================
-   ENAMEL / CROWN
-===================================== */
+/* ==========================================
+   CROWN / ENAMEL
+========================================== */
 
 const crownGeometry =
 new THREE.SphereGeometry(
-  1.25,
-  64,
-  64
+1.25,
+64,
+64
 );
 
 const enamelMaterial =
 new THREE.MeshStandardMaterial({
-  color: 0xf7f3df,
-  roughness: 0.25,
-  metalness: 0
+color: 0xf7f3df,
+roughness: 0.25
 });
 
 const crown =
 new THREE.Mesh(
-  crownGeometry,
-  enamelMaterial
+crownGeometry,
+enamelMaterial
 );
 
 crown.scale.set(
-  1,
-  1.15,
-  0.9
+1,
+1.15,
+0.9
 );
 
 crown.position.y =
 0.7;
 
-toothGroup.add(crown);
+toothGroup.add(
+crown
+);
 
 
 
-/* =====================================
+/* ==========================================
    DENTIN
-===================================== */
+========================================== */
 
 const dentinGeometry =
 new THREE.SphereGeometry(
-  0.98,
-  48,
-  48
+0.98,
+48,
+48
 );
 
 const dentinMaterial =
 new THREE.MeshStandardMaterial({
-  color: 0xe2c995,
-  roughness: 0.5
+color: 0xe2c995,
+roughness: 0.5
 });
 
 const dentin =
 new THREE.Mesh(
-  dentinGeometry,
-  dentinMaterial
+dentinGeometry,
+dentinMaterial
 );
 
 dentin.scale.set(
-  1,
-  1.2,
-  0.9
+1,
+1.2,
+0.9
 );
 
 dentin.position.y =
@@ -412,155 +609,160 @@ dentin.position.y =
 dentin.visible =
 false;
 
-toothGroup.add(dentin);
+toothGroup.add(
+dentin
+);
 
 
 
-/* =====================================
+/* ==========================================
    ROOT GROUP
-===================================== */
+========================================== */
 
 const rootGroup =
 new THREE.Group();
 
-toothGroup.add(rootGroup);
+toothGroup.add(
+rootGroup
+);
 
-
-
-/* =====================================
-   ROOT FUNCTION
-===================================== */
 
 function createRoot(
-  x,
-  rotation
+x,
+rotation
 ) {
 
-  const geometry =
-  new THREE.ConeGeometry(
-    0.28,
-    2.2,
-    48
-  );
+const geometry =
+new THREE.ConeGeometry(
+0.28,
+2.2,
+48
+);
 
-  const material =
-  new THREE.MeshStandardMaterial({
-    color: 0xe5dfc9,
-    roughness: 0.4
-  });
+const material =
+new THREE.MeshStandardMaterial({
+color: 0xe5dfc9,
+roughness: 0.4
+});
 
-  const root =
-  new THREE.Mesh(
-    geometry,
-    material
-  );
+const root =
+new THREE.Mesh(
+geometry,
+material
+);
 
-  root.position.set(
-    x,
-    -1.0,
-    0
-  );
+root.position.set(
+x,
+-1,
+0
+);
 
-  root.rotation.z =
-  rotation;
+root.rotation.z =
+rotation;
 
-  rootGroup.add(root);
+rootGroup.add(
+root
+);
 
 }
 
 
-
-/* CREATE ROOTS */
-
 createRoot(
-  -0.55,
-  -0.12
+-0.55,
+-0.12
 );
 
 createRoot(
-  0,
-  0
+0,
+0
 );
 
 createRoot(
-  0.55,
-  0.12
+0.55,
+0.12
 );
 
 
 
-/* =====================================
-   PULP CHAMBER
-===================================== */
+/* ==========================================
+   PULP
+========================================== */
 
 const pulpGeometry =
 new THREE.SphereGeometry(
-  0.42,
-  32,
-  32
+0.42,
+32,
+32
 );
 
 const pulpMaterial =
 new THREE.MeshStandardMaterial({
-  color: 0xd94b4b,
-  transparent: true,
-  opacity: 0.9
+color: 0xd94b4b,
+transparent: true,
+opacity: 0.9
 });
 
 const pulp =
 new THREE.Mesh(
-  pulpGeometry,
-  pulpMaterial
+pulpGeometry,
+pulpMaterial
 );
 
 pulp.scale.set(
-  0.7,
-  1.5,
-  0.7
+0.7,
+1.5,
+0.7
 );
 
 pulp.position.y =
 0.5;
 
-toothGroup.add(pulp);
+toothGroup.add(
+pulp
+);
 
 
 
-/* =====================================
-   ROOT CANALS
-===================================== */
+/* ==========================================
+   CANALS
+========================================== */
 
 const canalMaterial =
 new THREE.MeshStandardMaterial({
-  color: 0xe45b5b
+color: 0xe45b5b
 });
 
 
 function createCanal(x) {
 
-  const geometry =
-  new THREE.CylinderGeometry(
-    0.07,
-    0.04,
-    1.8,
-    20
-  );
+const geometry =
+new THREE.CylinderGeometry(
+0.07,
+0.04,
+1.8,
+20
+);
 
-  const canal =
-  new THREE.Mesh(
-    geometry,
-    canalMaterial
-  );
+const canal =
+new THREE.Mesh(
+geometry,
+canalMaterial
+);
 
-  canal.position.set(
-    x,
-    -0.65,
-    0
-  );
+canal.position.set(
+x,
+-0.65,
+0
+);
 
-  toothGroup.add(canal);
+canal.visible =
+false;
 
-  return canal;
+toothGroup.add(
+canal
+);
+
+return canal;
 
 }
 
@@ -576,145 +778,137 @@ createCanal(0.55);
 
 
 
-/* =====================================
-   INITIAL VISIBILITY
-===================================== */
-
-dentin.visible = false;
-
-canal1.visible = false;
-canal2.visible = false;
-canal3.visible = false;
-
-
-
-/* =====================================
+/* ==========================================
    LABELS
-===================================== */
+========================================== */
 
 const labels = [];
 
 
 function createLabel(
-  text,
-  x,
-  y,
-  z
+text,
+x,
+y,
+z
 ) {
 
-  const canvas =
-  document.createElement("canvas");
+const canvas =
+document.createElement(
+"canvas"
+);
 
-  canvas.width = 512;
-  canvas.height = 128;
+canvas.width =
+512;
 
-  const ctx =
-  canvas.getContext("2d");
+canvas.height =
+128;
 
-  ctx.clearRect(
-    0,
-    0,
-    512,
-    128
-  );
+const ctx =
+canvas.getContext(
+"2d"
+);
 
-  ctx.fillStyle =
-  "white";
+ctx.clearRect(
+0,
+0,
+512,
+128
+);
 
-  ctx.font =
-  "bold 42px Arial";
+ctx.fillStyle =
+"white";
 
-  ctx.fillText(
-    text,
-    20,
-    75
-  );
+ctx.font =
+"bold 42px Arial";
 
-
-  const texture =
-  new THREE.CanvasTexture(
-    canvas
-  );
-
-
-  const material =
-  new THREE.SpriteMaterial({
-    map: texture,
-    transparent: true
-  });
+ctx.fillText(
+text,
+20,
+75
+);
 
 
-  const sprite =
-  new THREE.Sprite(
-    material
-  );
+const texture =
+new THREE.CanvasTexture(
+canvas
+);
+
+const material =
+new THREE.SpriteMaterial({
+map: texture,
+transparent: true
+});
 
 
-  sprite.position.set(
-    x,
-    y,
-    z
-  );
+const sprite =
+new THREE.Sprite(
+material
+);
 
+sprite.position.set(
+x,
+y,
+z
+);
 
-  sprite.scale.set(
-    1.4,
-    0.35,
-    1
-  );
+sprite.scale.set(
+1.4,
+0.35,
+1
+);
 
+sprite.visible =
+false;
 
-  sprite.visible =
-  false;
+scene.add(
+sprite
+);
 
-
-  scene.add(sprite);
-
-  labels.push(sprite);
+labels.push(
+sprite
+);
 
 }
 
 
-/* LABELS */
-
 createLabel(
-  "Enamel",
-  1.5,
-  1.2,
-  0
+"Enamel",
+1.5,
+1.2,
+0
 );
 
 createLabel(
-  "Dentin",
-  1.5,
-  0.35,
-  0
+"Dentin",
+1.5,
+0.35,
+0
 );
 
 createLabel(
-  "Pulp",
-  1.3,
-  0.1,
-  0
+"Pulp",
+1.3,
+0.1,
+0
 );
 
 createLabel(
-  "Root Canal",
-  1.5,
-  -1.1,
-  0
+"Root Canal",
+1.5,
+-1.1,
+0
 );
 
 
 
-/* =====================================
+/* ==========================================
    ORBIT CONTROLS
-===================================== */
+========================================== */
 
 const controls =
 new OrbitControls(
-  camera,
-  renderer.domElement
+camera,
+renderer.domElement
 );
 
 controls.enableDamping =
@@ -734,9 +928,9 @@ controls.maxDistance =
 
 
 
-/* =====================================
+/* ==========================================
    STATE
-===================================== */
+========================================== */
 
 let labelsVisible =
 false;
@@ -746,215 +940,385 @@ false;
 
 
 
-/* =====================================
+/* ==========================================
    EXTERNAL VIEW
-===================================== */
+========================================== */
 
 window.externalView =
 function() {
 
-  crown.visible =
-  true;
+crown.visible =
+true;
 
-  dentin.visible =
-  false;
+dentin.visible =
+false;
 
-  pulp.visible =
-  true;
+pulp.visible =
+true;
 
-  canal1.visible =
-  false;
+canal1.visible =
+false;
 
-  canal2.visible =
-  false;
+canal2.visible =
+false;
 
-  canal3.visible =
-  false;
+canal3.visible =
+false;
+
+document.getElementById(
+"learningText"
+).innerText =
+"Rotate the tooth to explore its external anatomy.";
 
 };
 
 
 
-/* =====================================
+/* ==========================================
    SECTION VIEW
-===================================== */
+========================================== */
 
 window.sectionView =
 function() {
 
-  crown.visible =
-  false;
+crown.visible =
+false;
 
-  dentin.visible =
-  true;
+dentin.visible =
+true;
 
-  pulp.visible =
-  true;
+pulp.visible =
+true;
 
-  canal1.visible =
-  true;
+canal1.visible =
+true;
 
-  canal2.visible =
-  true;
+canal2.visible =
+true;
 
-  canal3.visible =
-  true;
+canal3.visible =
+true;
+
+document.getElementById(
+"learningText"
+).innerText =
+"Section view reveals the internal structures: enamel, dentin, pulp chamber and root canals.";
 
 };
 
 
 
-/* =====================================
+/* ==========================================
    PULP VIEW
-===================================== */
+========================================== */
 
 window.pulpView =
 function() {
 
-  crown.visible =
-  false;
+crown.visible =
+false;
 
-  dentin.visible =
-  false;
+dentin.visible =
+false;
 
-  pulp.visible =
-  true;
+pulp.visible =
+true;
 
-  canal1.visible =
-  true;
+canal1.visible =
+true;
 
-  canal2.visible =
-  true;
+canal2.visible =
+true;
 
-  canal3.visible =
-  true;
+canal3.visible =
+true;
+
+document.getElementById(
+"learningText"
+).innerText =
+"Pulp view focuses on the pulp chamber and root canal system.";
 
 };
 
 
 
-/* =====================================
-   LABEL TOGGLE
-===================================== */
+/* ==========================================
+   LABELS
+========================================== */
 
 window.toggleLabels =
 function() {
 
-  labelsVisible =
-  !labelsVisible;
+labelsVisible =
+!labelsVisible;
 
-  labels.forEach(
-    function(label) {
+labels.forEach(
+function(label) {
 
-      label.visible =
-      labelsVisible;
+label.visible =
+labelsVisible;
 
-    }
-  );
+});
 
 };
 
 
 
-/* =====================================
+/* ==========================================
    AUTO ROTATE
-===================================== */
+========================================== */
 
 window.toggleAutoRotate =
 function() {
 
-  autoRotate =
-  !autoRotate;
+autoRotate =
+!autoRotate;
 
 };
 
 
 
-/* =====================================
+/* ==========================================
    RESET
-===================================== */
+========================================== */
 
 window.resetView =
 function() {
 
-  camera.position.set(
-    0,
-    1.2,
-    5
-  );
+camera.position.set(
+0,
+1.2,
+5
+);
 
-  controls.target.set(
-    0,
-    0,
-    0
-  );
+controls.target.set(
+0,
+0,
+0
+);
 
-  controls.update();
+controls.update();
 
+toothGroup.rotation.set(
+0,
+0,
+0
+);
 
-  toothGroup.rotation.set(
-    0,
-    0,
-    0
-  );
-
-
-  externalView();
+externalView();
 
 };
 
 
 
-/* =====================================
+/* ==========================================
+   TOOTH DATABASE
+========================================== */
+
+const toothData = {
+
+"46": {
+name: "Tooth 46",
+type: "Mandibular First Molar",
+roots: "Two roots — mesial and distal",
+canals: "Usually 3–4 canals. Mesial root commonly has MB and ML canals.",
+clinical: "Carefully inspect the pulpal floor and canal orifices during access."
+},
+
+"36": {
+name: "Tooth 36",
+type: "Mandibular First Molar",
+roots: "Two roots — mesial and distal",
+canals: "Usually 3–4 canals.",
+clinical: "Look carefully for separate mesial canal orifices."
+},
+
+"16": {
+name: "Tooth 16",
+type: "Maxillary First Molar",
+roots: "Three roots — mesiobuccal, distobuccal and palatal",
+canals: "Usually 3–4 canals. MB2 may be present.",
+clinical: "Search carefully for the MB2 canal."
+},
+
+"26": {
+name: "Tooth 26",
+type: "Maxillary First Molar",
+roots: "Three roots — mesiobuccal, distobuccal and palatal",
+canals: "Usually 3–4 canals.",
+clinical: "MB2 identification is an important endodontic consideration."
+},
+
+"11": {
+name: "Tooth 11",
+type: "Maxillary Central Incisor",
+roots: "Usually one root",
+canals: "Usually one canal",
+clinical: "Understand the palatal anatomy and access orientation."
+},
+
+"21": {
+name: "Tooth 21",
+type: "Maxillary Central Incisor",
+roots: "Usually one root",
+canals: "Usually one canal",
+clinical: "Study the relationship between crown anatomy and pulp chamber."
+},
+
+"31": {
+name: "Tooth 31",
+type: "Mandibular Central Incisor",
+roots: "Usually one root",
+canals: "Usually one canal, but two canals may occur.",
+clinical: "Consider the possibility of a second canal."
+},
+
+"41": {
+name: "Tooth 41",
+type: "Mandibular Central Incisor",
+roots: "Usually one root",
+canals: "Usually one canal, with possible two-canal anatomy.",
+clinical: "Evaluate the lingual aspect carefully."
+},
+
+"13": {
+name: "Tooth 13",
+type: "Maxillary Canine",
+roots: "Usually one long root",
+canals: "Usually one canal",
+clinical: "The long root requires careful working-length assessment."
+},
+
+"23": {
+name: "Tooth 23",
+type: "Maxillary Canine",
+roots: "Usually one long root",
+canals: "Usually one canal",
+clinical: "Study the long root and canal orientation."
+},
+
+"33": {
+name: "Tooth 33",
+type: "Mandibular Canine",
+roots: "Usually one root",
+canals: "Usually one canal, occasionally two.",
+clinical: "Look for possible additional canal anatomy."
+},
+
+"43": {
+name: "Tooth 43",
+type: "Mandibular Canine",
+roots: "Usually one root",
+canals: "Usually one canal, occasionally two.",
+clinical: "Understand possible variation in canal anatomy."
+}
+
+};
+
+
+
+/* ==========================================
+   CHANGE TOOTH
+========================================== */
+
+window.changeTooth =
+function() {
+
+const selected =
+document.getElementById(
+"toothSelect"
+).value;
+
+const data =
+toothData[selected];
+
+if (!data) return;
+
+
+document.getElementById(
+"toothName"
+).innerText =
+data.name;
+
+
+document.getElementById(
+"toothType"
+).innerText =
+data.type;
+
+
+document.getElementById(
+"rootInfo"
+).innerText =
+data.roots;
+
+
+document.getElementById(
+"canalInfo"
+).innerText =
+data.canals;
+
+
+document.getElementById(
+"clinicalInfo"
+).innerText =
+data.clinical;
+
+
+resetView();
+
+};
+
+
+
+/* ==========================================
    RESIZE
-===================================== */
+========================================== */
 
 window.addEventListener(
-  "resize",
-  function() {
+"resize",
+function() {
 
-    camera.aspect =
-    container.clientWidth /
-    container.clientHeight;
+camera.aspect =
+container.clientWidth /
+container.clientHeight;
 
-    camera.updateProjectionMatrix();
+camera.updateProjectionMatrix();
 
-    renderer.setSize(
-      container.clientWidth,
-      container.clientHeight
-    );
-
-  }
+renderer.setSize(
+container.clientWidth,
+container.clientHeight
 );
 
+});
 
 
-/* =====================================
+
+/* ==========================================
    ANIMATION
-===================================== */
+========================================== */
 
 function animate() {
 
-  requestAnimationFrame(
-    animate
-  );
+requestAnimationFrame(
+animate
+);
+
+controls.update();
 
 
-  controls.update();
+if (autoRotate) {
+
+toothGroup.rotation.y +=
+0.005;
+
+}
 
 
-  if (autoRotate) {
-
-    toothGroup.rotation.y +=
-    0.005;
-
-  }
-
-
-  renderer.render(
-    scene,
-    camera
-  );
+renderer.render(
+scene,
+camera
+);
 
 }
 
@@ -964,4 +1328,5 @@ animate();
 </script>
 
 </body>
+
 </html>
